@@ -1,0 +1,18 @@
+2026/05/07-16:41:09.207 5ec2 Creating DB /tmp/flutter_tools.CLGMRX/flutter_tools_chrome_device.HEKASW/Default/IndexedDB/http_localhost_9279.indexeddb.leveldb since it was missing.
+2026/05/07-16:41:09.222 5ec2 Reusing MANIFEST /tmp/flutter_tools.CLGMRX/flutter_tools_chrome_device.HEKASW/Default/IndexedDB/http_localhost_9279.indexeddb.leveldb/MANIFEST-000001
+2026/05/07-16:41:09.268 5ec5 Level-0 table #5: started
+2026/05/07-16:41:09.278 5ec5 Level-0 table #5: 1260 bytes OK
+2026/05/07-16:41:09.289 5ec5 Delete type=0 #3
+2026/05/07-16:41:09.290 5ec5 Manual compaction at level-0 from '\x00\x01\x00\x00\x00' @ 72057594037927935 : 1 .. '\x00\x02\x00\x00\x00' @ 0 : 0; will stop at (end)
+2026/05/07-17:42:04.896 5ec3 Level-0 table #7: started
+2026/05/07-17:42:04.907 5ec3 Level-0 table #7: 1649 bytes OK
+2026/05/07-17:42:04.916 5ec3 Delete type=0 #4
+2026/05/07-17:42:04.916 5ec3 Manual compaction at level-0 from (begin) .. (end); will stop at (end)
+2026/05/07-17:42:04.916 5ec3 Manual compaction at level-1 from (begin) .. (end); will stop at '\x00\x03\x01\x02\x013\x00[\x00D\x00E\x00F\x00A\x00U\x00L\x00T\x00]\x00!\x001\x00:\x006\x008\x000\x000\x007\x008\x001\x004\x009\x005\x003\x002\x00:\x00w\x00e\x00b\x00:\x009\x00f\x009\x00e\x003\x003\x009\x003\x007\x00a\x005\x00d\x004\x00a\x00e\x006\x003\x005\x00e\x00a\x005\x009' @ 122 : 1
+2026/05/07-17:42:04.916 5ec3 Compacting 1@1 + 1@2 files
+2026/05/07-17:42:04.922 5ec3 Generated table #8@1: 34 keys, 1131 bytes
+2026/05/07-17:42:04.922 5ec3 Compacted 1@1 + 1@2 files => 1131 bytes
+2026/05/07-17:42:04.929 5ec3 compacted to: files[ 0 0 1 0 0 0 0 ]
+2026/05/07-17:42:04.930 5ec3 Delete type=2 #7
+2026/05/07-17:42:04.930 5ec3 Delete type=2 #5
+2026/05/07-17:42:04.930 5ec3 Manual compaction at level-1 from '\x00\x03\x01\x02\x013\x00[\x00D\x00E\x00F\x00A\x00U\x00L\x00T\x00]\x00!\x001\x00:\x006\x008\x000\x000\x007\x008\x001\x004\x009\x005\x003\x002\x00:\x00w\x00e\x00b\x00:\x009\x00f\x009\x00e\x003\x003\x009\x003\x007\x00a\x005\x00d\x004\x00a\x00e\x006\x003\x005\x00e\x00a\x005\x009' @ 122 : 1 .. (end); will stop at (end)
