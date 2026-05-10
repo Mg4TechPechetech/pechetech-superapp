@@ -1,9 +1,10 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart' show FirebaseAuthPlatform;
+import 'package:firebase_auth_platform_interface/firebase_auth_platform_interface.dart'
+    show FirebaseAuthPlatform;
 
 import 'registration_screen.dart';
 import '../data/auth_service.dart';
@@ -40,6 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (user != null) {
         if (mounted) {
+          FocusScope.of(context).unfocus();
           CustomToast.show(
             context,
             message: 'Connexion réussie !',
@@ -80,14 +82,14 @@ class _LoginScreenState extends State<LoginScreen> {
     }
 
     setState(() => _isLoading = true);
-    
+
     // Create RecaptchaVerifier for Web as per documentation
     RecaptchaVerifier? webVerifier;
     if (kIsWeb) {
       webVerifier = RecaptchaVerifier(
-        auth: FirebaseAuthPlatform.instance,
+        auth: FirebaseAuthPlatform.instance, // Required type for web verifier
         container: 'recaptcha-container',
-        size: RecaptchaVerifierSize.compact,
+        size: RecaptchaVerifierSize.normal,
       );
     }
 
@@ -95,9 +97,10 @@ class _LoginScreenState extends State<LoginScreen> {
       phoneNumber: phone,
       webVerifier: webVerifier,
       verificationCompleted: (PhoneAuthCredential credential) async {
-        await _authService.signInWithPhone(credential: credential);
+        final user = await _authService.signInWithPhone(credential: credential);
         setState(() => _isLoading = false);
-        if (mounted) {
+        if (user != null && mounted) {
+          FocusScope.of(context).unfocus();
           CustomToast.show(context,
               message: 'Connexion réussie !', type: ToastType.success);
         }
@@ -147,6 +150,7 @@ class _LoginScreenState extends State<LoginScreen> {
       setState(() => _isLoading = false);
 
       if (user != null && mounted) {
+        FocusScope.of(context).unfocus();
         CustomToast.show(context,
             message: 'Connexion réussie !', type: ToastType.success);
       }
@@ -166,6 +170,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
     if (user != null) {
       if (mounted) {
+        FocusScope.of(context).unfocus();
         CustomToast.show(
           context,
           message: 'Connexion Google réussie !',
@@ -439,6 +444,21 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                             keyboardType: TextInputType.phone,
                           ),
+                          if (kDebugMode && !_codeSent) ...[
+                            const SizedBox(height: 8),
+                            TextButton.icon(
+                              onPressed: () {
+                                _phoneController.text = '+221700000000';
+                              },
+                              icon: const Icon(Icons.bug_report,
+                                  size: 16, color: AppTheme.accentGreen),
+                              label: const Text(
+                                'Utiliser le numéro de test',
+                                style: TextStyle(
+                                    color: AppTheme.accentGreen, fontSize: 12),
+                              ),
+                            ),
+                          ],
                           if (_codeSent) ...[
                             const SizedBox(height: 24),
                             const Text(
@@ -460,6 +480,22 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                               keyboardType: TextInputType.number,
                             ),
+                            if (kDebugMode) ...[
+                              const SizedBox(height: 8),
+                              TextButton.icon(
+                                onPressed: () {
+                                  _otpController.text = '123456';
+                                },
+                                icon: const Icon(Icons.lock_open,
+                                    size: 16, color: AppTheme.accentGreen),
+                                label: const Text(
+                                  'Utiliser le code de test',
+                                  style: TextStyle(
+                                      color: AppTheme.accentGreen,
+                                      fontSize: 12),
+                                ),
+                              ),
+                            ],
                           ],
                         ],
                         const SizedBox(height: 24),
@@ -492,7 +528,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       : _handleSendOTP)
                                   : _handleLogin),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(0xFF00E676),
+                            backgroundColor: AppTheme.primaryGreen,
                             minimumSize: const Size.fromHeight(56),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(12),
@@ -562,7 +598,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       const Text(
                         'Pas encore de compte ? ',
-                        style: TextStyle(color: Color(0xFF3C4A42), fontSize: 16),
+                        style:
+                            TextStyle(color: Color(0xFF3C4A42), fontSize: 16),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -576,7 +613,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: const Text(
                           "S'inscrire",
                           style: TextStyle(
-                            color:AppTheme.accentGreen,
+                            color: AppTheme.accentGreen,
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),

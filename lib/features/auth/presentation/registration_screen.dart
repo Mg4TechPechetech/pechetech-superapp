@@ -24,6 +24,22 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   bool _acceptTerms = false;
   bool _obscurePassword = true;
 
+  final List<String> _roles = [
+    'Pêcheur',
+    'Capitaine',
+    'Pompiste',
+    'Transformateur(trice)',
+    'GIE',
+    'Trésorier GIE',
+  ];
+  late String _selectedRole;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedRole = 'Capitaine'; // Capitaine par défaut
+  }
+
   Future<void> _handleRegister() async {
     final name = _nameController.text.trim();
     final email = _emailController.text.trim();
@@ -113,6 +129,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
       if (user != null) {
         if (mounted) {
+          FocusScope.of(context).unfocus();
           CustomToast.show(
             context,
             message: 'Inscription réussie !',
@@ -139,18 +156,37 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           type: ToastType.error,
         );
       }
+    }
+  }
+ 
+  Future<void> _handleGoogleSignIn() async {
+    setState(() => _isLoading = true);
+    try {
+      final user = await _authService.signInWithGoogle();
+      setState(() => _isLoading = false);
+ 
+      if (user != null) {
+        if (mounted) {
+          FocusScope.of(context).unfocus();
+          CustomToast.show(
+            context,
+            message: 'Connexion Google réussie !',
+            type: ToastType.success,
+          );
+        }
+      }
     } catch (e) {
       setState(() => _isLoading = false);
       if (mounted) {
         CustomToast.show(
           context,
-          message: 'Une erreur inattendue est survenue.',
+          message: 'Erreur lors de la connexion Google.',
           type: ToastType.error,
         );
       }
     }
   }
-
+ 
   @override
   void dispose() {
     _nameController.dispose();
@@ -279,6 +315,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               controller: _nameController,
                             ),
                             const SizedBox(height: 24),
+                            _buildLabel(context, 'VOTRE RÔLE / ACTIVITÉ'),
+                            const SizedBox(height: 8),
+                            _buildDropdownField(
+                              value: _selectedRole,
+                              items: _roles,
+                              onChanged: (value) {
+                                if (value != null) {
+                                  setState(() => _selectedRole = value);
+                                }
+                              },
+                              prefixIcon: Icons.badge_outlined,
+                            ),
+                            const SizedBox(height: 24),
                             _buildLabel(context, 'ADRESSE E-MAIL'),
                             const SizedBox(height: 8),
                             _buildTextField(
@@ -322,7 +371,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               child: Text(
                                 'Minimum 8 caractères, une majuscule et un chiffre.',
                                 style: GoogleFonts.publicSans(
-                                  color: const Color(0xFF6E6E73),
+                                  color: AppTheme.textHint,
                                   fontSize: 12,
                                   fontWeight: FontWeight.w400,
                                   height: 1.4,
@@ -472,7 +521,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
                   // Google Button
                   OutlinedButton(
-                    onPressed: () {},
+                    onPressed: _isLoading ? null : _handleGoogleSignIn,
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Colors.white.withValues(alpha: 0.5),
                       side: BorderSide(
@@ -591,6 +640,47 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             ),
           ),
         ],
+      ),
+    );
+  }
+  Widget _buildDropdownField({
+    required String value,
+    required List<String> items,
+    required void Function(String?) onChanged,
+    required IconData prefixIcon,
+  }) {
+    return DropdownButtonFormField<String>(
+      initialValue: value,
+      items: items.map((String role) {
+        return DropdownMenuItem<String>(
+          value: role,
+          child: Text(
+            role,
+            style: GoogleFonts.publicSans(
+              color: const Color(0xFF161D19),
+              fontSize: 16,
+            ),
+          ),
+        );
+      }).toList(),
+      onChanged: onChanged,
+      icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF3C4A42)),
+      dropdownColor: const Color(0xFFF4FBF4),
+      decoration: InputDecoration(
+        prefixIcon: Icon(
+          prefixIcon,
+          color: const Color(0xFF3C4A42),
+        ),
+        filled: true,
+        fillColor: Colors.white.withValues(alpha: 0.3),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.6)),
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.white.withValues(alpha: 0.6)),
+        ),
       ),
     );
   }

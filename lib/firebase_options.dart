@@ -9,10 +9,7 @@ class DefaultFirebaseOptions {
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
-        throw UnsupportedError(
-          'DefaultFirebaseOptions have not been configured for android - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
-        );
+        return android;
       case TargetPlatform.iOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for ios - '
@@ -46,6 +43,14 @@ class DefaultFirebaseOptions {
     messagingSenderId: '680078149532',
     projectId: 'pechetech-app-mg4',
     authDomain: 'pechetech-app-mg4.firebaseapp.com',
+    storageBucket: 'pechetech-app-mg4.firebasestorage.app',
+  );
+
+  static const FirebaseOptions android = FirebaseOptions(
+    apiKey: 'AIzaSyB3mRtErfQVoeqn9p0MaUyCRlBlLBJMs90',
+    appId: '1:680078149532:android:eca6f23d8ee2479835ea59',
+    messagingSenderId: '680078149532',
+    projectId: 'pechetech-app-mg4',
     storageBucket: 'pechetech-app-mg4.firebasestorage.app',
   );
 }

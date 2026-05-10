@@ -1,11 +1,23 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final GoogleSignIn _googleSignIn = GoogleSignIn.instance;
-  
+  late final GoogleSignIn _googleSignIn;
+
+  AuthService() {
+    if (!kIsWeb) {
+      _googleSignIn = GoogleSignIn.instance;
+    }
+  }
+
+  Future<void> init() async {
+    if (!kIsWeb) {
+      await _googleSignIn.initialize();
+    }
+  }
+
   // To store the result on Web
   ConfirmationResult? _webConfirmationResult;
 
@@ -45,12 +57,11 @@ class AuthService {
     required Function(FirebaseAuthException) verificationFailed,
     required Function(String, int?) codeSent,
     required Function(String) codeAutoRetrievalTimeout,
-    RecaptchaVerifier? webVerifier, // Added for Web support
+    dynamic webVerifier, // Using dynamic to avoid conditional import issues for now
   }) async {
     if (kIsWeb) {
       try {
         // On Web, we use signInWithPhoneNumber which returns a ConfirmationResult
-        // If webVerifier is null, it uses an invisible one by default
         _webConfirmationResult = await _auth.signInWithPhoneNumber(
           phoneNumber,
           webVerifier,
@@ -97,32 +108,48 @@ class AuthService {
   // Google Sign In
   Future<UserCredential?> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount user = await _googleSignIn.authenticate();
-      final GoogleSignInAuthentication googleAuth = user.authentication;
+      if (kIsWeb) {
+        final GoogleAuthProvider googleProvider = GoogleAuthProvider();
+        return await _auth.signInWithPopup(googleProvider);
+      } else {
+        final googleUser = await _googleSignIn.authenticate();
+        final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
-      final AuthCredential credential = GoogleAuthProvider.credential(
-        accessToken: null,
-        idToken: googleAuth.idToken,
-      );
+        final AuthCredential credential = GoogleAuthProvider.credential(
+          accessToken: null,
+          idToken: googleAuth.idToken,
+        );
 
-      return await _auth.signInWithCredential(credential);
-    } catch (_) {
+        return await _auth.signInWithCredential(credential);
+      }
+    } catch (e) {
+      debugPrint('AuthService: Google Sign-In error: $e');
       rethrow;
     }
   }
 
   // Sign Out
   Future<void> signOut() async {
+    debugPrint('AuthService: Starting signOut process...');
     try {
-      // Try to sign out from Google if possible, but don't let it block Firebase sign out
-      await _googleSignIn.signOut().timeout(const Duration(seconds: 2)).catchError((_) => null);
-    } catch (_) {}
-    
+      // Only attempt Google signOut if we're on mobile or if there's an active session
+      // On Web, this can sometimes hang if not used
+      if (!kIsWeb) {
+        await _googleSignIn.signOut();
+        debugPrint('AuthService: Google Sign-In signed out.');
+      }
+    } catch (e) {
+      debugPrint('AuthService: Google Sign-In signOut error (ignored): $e');
+    }
+
     try {
       await _auth.signOut();
-    } catch (_) {
+      debugPrint('AuthService: Firebase Auth signed out.');
+    } catch (e) {
+      debugPrint('AuthService: Firebase Auth signOut error: $e');
       rethrow;
     }
     _webConfirmationResult = null;
+    debugPrint('AuthService: signOut process completed.');
   }
 }

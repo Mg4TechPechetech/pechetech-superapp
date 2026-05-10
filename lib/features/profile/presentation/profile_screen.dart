@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import '../../auth/data/auth_service.dart';
-import '../../auth/presentation/login_screen.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/custom_toast.dart';
 
@@ -11,7 +10,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0FDF4), // Light mint background from mockup
+      backgroundColor: AppTheme.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
         child: Column(
@@ -55,7 +54,7 @@ class ProfileScreen extends StatelessWidget {
                 height: 120,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFF1F5F9), width: 4),
+                  border: Border.all(color: AppTheme.border, width: 4),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.1),
@@ -321,47 +320,51 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  void _showLogoutDialog(BuildContext context) {
+  void _showLogoutDialog(BuildContext screenContext) {
     showCupertinoDialog(
-      context: context,
-      builder: (BuildContext context) => CupertinoAlertDialog(
+      context: screenContext,
+      builder: (dialogContext) => CupertinoAlertDialog(
         title: const Text("Déconnexion"),
         content: const Text("Êtes-vous sûr de vouloir vous déconnecter de PecheTech ?"),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             isDefaultAction: true,
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.pop(dialogContext);
             },
             child: const Text("Annuler"),
           ),
           CupertinoDialogAction(
             isDestructiveAction: true,
             onPressed: () async {
+              debugPrint('ProfileScreen: Logout button pressed.');
               // Close the dialog
-              Navigator.of(context, rootNavigator: true).pop();
+              try {
+                Navigator.of(dialogContext, rootNavigator: true).pop();
+                debugPrint('ProfileScreen: Logout dialog closed.');
+              } catch (e) {
+                debugPrint('ProfileScreen: Error closing dialog: $e');
+              }
               
               try {
+                debugPrint('ProfileScreen: Calling AuthService().signOut()...');
                 // Perform logout logic
                 await AuthService().signOut();
+                debugPrint('ProfileScreen: AuthService().signOut() completed.');
                 
-                if (context.mounted) {
-                  // Explicitly redirect to login screen for immediate feedback
-                  Navigator.of(context, rootNavigator: true).pushAndRemoveUntil(
-                    MaterialPageRoute(builder: (context) => const LoginScreen()),
-                    (route) => false,
-                  );
-                  
+                // Show toast using the screen context
+                if (screenContext.mounted) {
                   CustomToast.show(
-                    context,
+                    screenContext,
                     message: "Déconnexion réussie. À bientôt !",
                     type: ToastType.success,
                   );
                 }
               } catch (e) {
-                if (context.mounted) {
+                debugPrint('ProfileScreen: Error during logout: $e');
+                if (screenContext.mounted) {
                   CustomToast.show(
-                    context,
+                    screenContext,
                     message: "Erreur lors de la déconnexion : $e",
                     type: ToastType.error,
                   );

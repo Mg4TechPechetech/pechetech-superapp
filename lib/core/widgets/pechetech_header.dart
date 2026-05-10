@@ -28,7 +28,7 @@ class PecheTechHeader extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF1F5F9), width: 1),
+          bottom: BorderSide(color: AppTheme.border, width: 1),
         ),
       ),
       child: Row(
@@ -100,7 +100,7 @@ class PecheTechHeader extends StatelessWidget {
                   width: 28,
                   height: 28,
                   colorFilter: const ColorFilter.mode(
-                    Color(0xFF64748B), // Slate 500
+                    AppTheme.textSecondary,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -111,7 +111,7 @@ class PecheTechHeader extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(2),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFC22E2E),
+                        color: AppTheme.error,
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 2),
                         boxShadow: [

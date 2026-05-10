@@ -26,9 +26,9 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
                 colors: [
-                  Color(0xFFF0FDF4), // Very light mint
-                  Color(0xFFECFDF5), // Light emerald
-                  Color(0xFFF0F9FF), // Very light blue
+                  AppTheme.background,
+                  AppTheme.surface,
+                  AppTheme.background,
                 ],
               ),
             ),
@@ -39,56 +39,56 @@ class _CommunityScreenState extends State<CommunityScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: _buildSearchBar(),
               ),
-                const SizedBox(height: 16),
-                _buildFilters(),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    children: [
-                      _buildActorCard(
-                        imagePath: 'assets/images/user_profile.png',
-                        name: "Mareyeurs du Littoral",
-                        isVerified: true,
-                        category: "Mareyeur Grossiste",
-                        detailIcon: Icons.inventory_2_outlined,
-                        detailText: "Achat en gros & Export",
-                        location: "Mbour, Sénégal",
-                      ),
-                      const SizedBox(height: 16),
-                      _buildActorCard(
-                        imagePath: 'assets/images/user_profile.png',
-                        name: "Femmes du Sel",
-                        isVerified: true,
-                        category: "Transformateurs",
-                        detailIcon: Icons.whatshot_outlined,
-                        detailText: "Fumage traditionnel",
-                        location: "Joal-Fadiouth, Sénégal",
-                      ),
-                      const SizedBox(height: 16),
-                      _buildActorCard(
-                        imagePath: 'assets/images/user_profile.png',
-                        name: "TransFroid Express",
-                        isVerified: true,
-                        category: "Logistique & Transport",
-                        detailIcon: Icons.ac_unit_outlined,
-                        detailText: "Transport frigorifique",
-                        location: "Dakar Port, Sénégal",
-                      ),
-                      const SizedBox(height: 16),
-                      _buildActorCard(
-                        imagePath: 'assets/images/user_profile.png',
-                        name: "Union de Kayar",
-                        isVerified: true,
-                        category: "Coopérative",
-                        detailIcon: Icons.handshake_outlined,
-                        detailText: "Mutualisation de moyens",
-                        location: "Kayar, Sénégal",
-                      ),
-                      const SizedBox(height: 100), // Space for bottom nav
-                    ],
-                  ),
+              const SizedBox(height: 16),
+              _buildFilters(),
+              const SizedBox(height: 16),
+              Expanded(
+                child: ListView(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  children: [
+                    _buildActorCard(
+                      imagePath: 'assets/images/user_profile.png',
+                      name: "Mareyeurs du Littoral",
+                      isVerified: true,
+                      category: "Mareyeur Grossiste",
+                      detailIcon: Icons.inventory_2_outlined,
+                      detailText: "Achat en gros & Export",
+                      location: "Mbour, Sénégal",
+                    ),
+                    const SizedBox(height: 16),
+                    _buildActorCard(
+                      imagePath: 'assets/images/user_profile.png',
+                      name: "Femmes du Sel",
+                      isVerified: true,
+                      category: "Transformateurs",
+                      detailIcon: Icons.whatshot_outlined,
+                      detailText: "Fumage traditionnel",
+                      location: "Joal-Fadiouth, Sénégal",
+                    ),
+                    const SizedBox(height: 16),
+                    _buildActorCard(
+                      imagePath: 'assets/images/user_profile.png',
+                      name: "TransFroid Express",
+                      isVerified: true,
+                      category: "Logistique & Transport",
+                      detailIcon: Icons.ac_unit_outlined,
+                      detailText: "Transport frigorifique",
+                      location: "Dakar Port, Sénégal",
+                    ),
+                    const SizedBox(height: 16),
+                    _buildActorCard(
+                      imagePath: 'assets/images/user_profile.png',
+                      name: "Union de Kayar",
+                      isVerified: true,
+                      category: "Coopérative",
+                      detailIcon: Icons.handshake_outlined,
+                      detailText: "Mutualisation de moyens",
+                      location: "Kayar, Sénégal",
+                    ),
+                    const SizedBox(height: 100), // Space for bottom nav
+                  ],
                 ),
+              ),
             ],
           ),
         ],
@@ -141,10 +141,14 @@ class _CommunityScreenState extends State<CommunityScreen> {
               duration: const Duration(milliseconds: 200),
               padding: const EdgeInsets.symmetric(horizontal: 24),
               decoration: BoxDecoration(
-                color: isSelected ? AppTheme.primaryGreen : Colors.white.withValues(alpha: 0.5),
+                color: isSelected
+                    ? AppTheme.primaryGreen
+                    : Colors.white.withValues(alpha: 0.5),
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
-                  color: isSelected ? AppTheme.primaryGreen : Colors.white.withValues(alpha: 0.5),
+                  color: isSelected
+                      ? AppTheme.primaryGreen
+                      : Colors.white.withValues(alpha: 0.5),
                 ),
               ),
               alignment: Alignment.center,
@@ -225,7 +229,8 @@ class _CommunityScreenState extends State<CommunityScreen> {
                             ),
                             if (isVerified) ...[
                               const SizedBox(width: 6),
-                              const Icon(Icons.verified, color: AppTheme.primaryGreen, size: 18),
+                              const Icon(Icons.verified,
+                                  color: AppTheme.primaryGreen, size: 18),
                             ],
                           ],
                         ),
@@ -254,14 +259,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       color: AppTheme.primaryGreen.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: Icon(detailIcon, color: AppTheme.primaryGreen, size: 20),
+                    child: Icon(detailIcon,
+                        color: AppTheme.primaryGreen, size: 20),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       detailText,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: AppTheme.textPrimary, fontSize: 15, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                          color: AppTheme.textPrimary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -275,14 +284,18 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       color: AppTheme.primaryGreen.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const Icon(Icons.location_on_outlined, color: AppTheme.primaryGreen, size: 20),
+                    child: const Icon(Icons.location_on_outlined,
+                        color: AppTheme.primaryGreen, size: 20),
                   ),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       location,
                       overflow: TextOverflow.ellipsis,
-                      style: const TextStyle(color: AppTheme.textPrimary, fontSize: 15, fontWeight: FontWeight.w500),
+                      style: const TextStyle(
+                          color: AppTheme.textPrimary,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500),
                     ),
                   ),
                 ],
@@ -296,10 +309,12 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       style: OutlinedButton.styleFrom(
                         foregroundColor: AppTheme.textPrimary,
                         side: const BorderSide(color: AppTheme.border),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                       ),
-                      child: const Text("Voir Profil", style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: const Text("Voir Profil",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
                   ),
                   const SizedBox(width: 12),
@@ -309,11 +324,13 @@ class _CommunityScreenState extends State<CommunityScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: AppTheme.primaryGreen,
                         foregroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(14)),
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         elevation: 0,
                       ),
-                      child: const Text("Contacter", style: TextStyle(fontWeight: FontWeight.bold)),
+                      child: const Text("Contacter",
+                          style: TextStyle(fontWeight: FontWeight.bold)),
                     ),
                   ),
                 ],

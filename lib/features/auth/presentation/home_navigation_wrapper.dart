@@ -8,6 +8,7 @@ import '../../journal/presentation/journal_screen.dart';
 import '../../map/presentation/map_screen.dart';
 import '../../profile/presentation/profile_screen.dart';
 import '../../fuel_subsidies/presentation/fuel_path_screen.dart';
+import '../../notifications/presentation/notifications_screen.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/pechetech_header.dart';
 
@@ -53,11 +54,19 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
           children: [
             Column(
               children: [
-                 PecheTechHeader(
+                PecheTechHeader(
                   onFuelTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const FuelPathScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const FuelPathScreen()),
+                    );
+                  },
+                  onNotificationsTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const NotificationsScreen()),
                     );
                   },
                 ),
@@ -69,7 +78,7 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
                 ),
               ],
             ),
-            
+
             // Voice listening blur overlay
             if (_isListening)
               Positioned.fill(
@@ -80,7 +89,7 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
                   ),
                 ),
               ),
-              
+
             // Microphone FAB + Listening Pill
             Positioned(
               bottom: 100, // Above nav bar
@@ -91,11 +100,13 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
                   if (_isListening)
                     Container(
                       margin: const EdgeInsets.only(right: 12),
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(24),
-                        border: Border.all(color: Colors.green.withValues(alpha: 0.3)),
+                        border: Border.all(
+                            color: Colors.green.withValues(alpha: 0.3)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.05),
@@ -165,11 +176,19 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
-                Expanded(child: _buildNavItem(0, "Journal", "assets/images/icon_nav_journal.svg")),
-                Expanded(child: _buildNavItem(1, "Carte", "assets/images/icon_nav_map.svg")),
+                Expanded(
+                    child: _buildNavItem(
+                        0, "Journal", "assets/images/icon_nav_journal.svg")),
+                Expanded(
+                    child: _buildNavItem(
+                        1, "Carte", "assets/images/icon_nav_map.svg")),
                 Expanded(child: _buildCenterHomeItem()),
-                Expanded(child: _buildNavItem(3, "Communauté", "assets/images/icon_nav_community.svg")),
-                Expanded(child: _buildNavItem(4, "Profil", "assets/images/icon_nav_profile.svg")),
+                Expanded(
+                    child: _buildNavItem(3, "Communauté",
+                        "assets/images/icon_nav_community.svg")),
+                Expanded(
+                    child: _buildNavItem(
+                        4, "Profil", "assets/images/icon_nav_profile.svg")),
               ],
             ),
           ),
@@ -182,9 +201,10 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
     final isSelected = _currentIndex == 2;
     final iconColor = isSelected ? Colors.white : AppTheme.textSecondary;
     final circleFillColor = isSelected ? AppTheme.primaryGreen : Colors.white;
-    final textColor = isSelected ? AppTheme.primaryGreen : AppTheme.textSecondary;
+    final textColor =
+        isSelected ? AppTheme.primaryGreen : AppTheme.textSecondary;
     const borderColor = Color(0xFF064E3B); // Dark green border
-    
+
     return GestureDetector(
       onTap: () => _onTabTapped(2),
       behavior: HitTestBehavior.opaque,
@@ -244,13 +264,15 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
   Widget _buildNavItem(int index, String label, String iconPath) {
     final isSelected = _currentIndex == index;
     final color = isSelected ? AppTheme.primaryGreen : AppTheme.textSecondary;
-    
+
     return GestureDetector(
       onTap: () => _onTabTapped(index),
       behavior: HitTestBehavior.opaque,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0).copyWith(bottom: 8),
-        height: 70, // explicitly set height to 70 for alignment with the background base
+        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0)
+            .copyWith(bottom: 8),
+        height:
+            70, // explicitly set height to 70 for alignment with the background base
         child: Column(
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
