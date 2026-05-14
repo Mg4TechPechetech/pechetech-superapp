@@ -2,40 +2,63 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/pechetech_header.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import '../../notifications/data/services/notification_service.dart';
+import '../../notifications/presentation/notifications_screen.dart';
 
 class FuelPathScreen extends StatelessWidget {
   const FuelPathScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final userId = FirebaseAuth.instance.currentUser?.uid;
+    
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildHeader(context),
-              const SizedBox(height: 24),
-              _buildWelcomeSection(),
-              const SizedBox(height: 24),
-              _buildFuelVoucherCard(),
-              const SizedBox(height: 24),
-              _buildAINavigationCard(),
-              const SizedBox(height: 24),
-              _buildLogCatchCard(),
-              const SizedBox(height: 100), // Space for bottom nav
-            ],
-          ),
+        child: Column(
+          children: [
+            _buildHeader(context, userId),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 24),
+                    _buildWelcomeSection(),
+                    const SizedBox(height: 24),
+                    _buildFuelVoucherCard(),
+                    const SizedBox(height: 24),
+                    _buildAINavigationCard(),
+                    const SizedBox(height: 24),
+                    _buildLogCatchCard(),
+                    const SizedBox(height: 100), // Space for bottom nav
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildHeader(BuildContext context) {
-    return const PecheTechHeader(
-      showBackButton: true,
+  Widget _buildHeader(BuildContext context, String? userId) {
+    return StreamBuilder<int>(
+      stream: NotificationService().getUnreadCount(userId),
+      builder: (context, snapshot) {
+        return PecheTechHeader(
+          showBackButton: true,
+          notificationCount: snapshot.data ?? 0,
+          onNotificationsTap: () {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+            );
+          },
+        );
+      }
     );
   }
 

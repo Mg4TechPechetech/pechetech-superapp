@@ -138,7 +138,7 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    setState(() => _isLoading = true);
+    if (mounted) setState(() => _isLoading = true);
     try {
       final user = await _authService.signInWithPhone(
         smsCode: code,
@@ -147,7 +147,7 @@ class _LoginScreenState extends State<LoginScreen> {
           smsCode: code,
         ),
       );
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
 
       if (user != null && mounted) {
         FocusScope.of(context).unfocus();
@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
             message: 'Connexion réussie !', type: ToastType.success);
       }
     } on FirebaseAuthException catch (_) {
-      setState(() => _isLoading = false);
+      if (mounted) setState(() => _isLoading = false);
       if (mounted) {
         CustomToast.show(context,
             message: 'Code invalide.', type: ToastType.error);

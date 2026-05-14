@@ -9,10 +9,16 @@ import '../../map/presentation/map_screen.dart';
 import '../../profile/presentation/profile_screen.dart';
 import '../../fuel_subsidies/presentation/fuel_path_screen.dart';
 import '../../notifications/presentation/notifications_screen.dart';
+import '../../benefits/presentation/screens/benefits_dashboard.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/pechetech_header.dart';
+import '../../profile/data/services/profile_service.dart';
+import '../../profile/data/models/user_model.dart';
+import '../../notifications/data/services/notification_service.dart';
 
 class HomeNavigationWrapper extends StatefulWidget {
+  static final ValueNotifier<int> selectedTab = ValueNotifier<int>(2);
+
   const HomeNavigationWrapper({super.key});
 
   @override
@@ -20,21 +26,40 @@ class HomeNavigationWrapper extends StatefulWidget {
 }
 
 class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
-  int _currentIndex = 2; // Default to ACCUEIL
+  int _currentIndex = 2; 
   bool _isListening = false; // For voice feature
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = HomeNavigationWrapper.selectedTab.value;
+    HomeNavigationWrapper.selectedTab.addListener(_handleTabChange);
+  }
+
+  @override
+  void dispose() {
+    HomeNavigationWrapper.selectedTab.removeListener(_handleTabChange);
+    super.dispose();
+  }
+
+  void _handleTabChange() {
+    if (mounted) {
+      setState(() {
+        _currentIndex = HomeNavigationWrapper.selectedTab.value;
+      });
+    }
+  }
 
   final List<Widget> _pages = [
     const JournalScreen(),
     const MapScreen(),
     const DashboardScreen(),
+    const BenefitsDashboard(),
     const CommunityScreen(),
-    const ProfileScreen(),
   ];
 
   void _onTabTapped(int index) {
-    setState(() {
-      _currentIndex = index;
-    });
+    HomeNavigationWrapper.selectedTab.value = index;
   }
 
   void _toggleListening() {
@@ -54,21 +79,41 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
           children: [
             Column(
               children: [
-                PecheTechHeader(
-                  onFuelTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const FuelPathScreen()),
+                StreamBuilder<UserModel?>(
+                  stream: ProfileService().currentUserProfileStream,
+                  builder: (context, userSnapshot) {
+                    final user = userSnapshot.data;
+                    return StreamBuilder<int>(
+                      stream: NotificationService().getUnreadCount(user?.uid),
+                      builder: (context, countSnapshot) {
+                        return PecheTechHeader(
+                          profileImageUrl: user?.photoUrl,
+                          notificationCount: countSnapshot.data ?? 0,
+                          onProfileTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const ProfileScreen()),
+                            );
+                          },
+                          onFuelTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const FuelPathScreen()),
+                            );
+                          },
+                          onNotificationsTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => const NotificationsScreen()),
+                            );
+                          },
+                        );
+                      }
                     );
-                  },
-                  onNotificationsTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const NotificationsScreen()),
-                    );
-                  },
+                  }
                 ),
                 Expanded(
                   child: IndexedStack(
@@ -184,11 +229,11 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
                         1, "Carte", "assets/images/icon_nav_map.svg")),
                 Expanded(child: _buildCenterHomeItem()),
                 Expanded(
-                    child: _buildNavItem(3, "Communauté",
-                        "assets/images/icon_nav_community.svg")),
+                    child: _buildNavItem(3, "Avantages",
+                        "assets/images/icon_wallet.svg")),
                 Expanded(
-                    child: _buildNavItem(
-                        4, "Profil", "assets/images/icon_nav_profile.svg")),
+                    child: _buildNavItem(4, "Communauté",
+                        "assets/images/icon_nav_community.svg")),
               ],
             ),
           ),

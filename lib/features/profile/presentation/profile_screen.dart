@@ -1,36 +1,94 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'dart:convert';
 import '../../auth/data/auth_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/custom_toast.dart';
+import 'settings_screen.dart';
+import 'edit_profile_screen.dart';
+import '../data/models/user_model.dart';
+import '../data/services/profile_service.dart';
+import '../../../core/widgets/pechetech_header.dart';
+import '../../notifications/data/services/notification_service.dart';
+import '../../fuel_subsidies/presentation/fuel_path_screen.dart';
+import '../../notifications/presentation/notifications_screen.dart';
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  final ProfileService _profileService = ProfileService();
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppTheme.background,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildMainProfileCard(),
-            const SizedBox(height: 24),
-            _buildKeyStatistics(),
-            const SizedBox(height: 24),
-            _buildBadgesSection(),
-            const SizedBox(height: 24),
-            _buildActionMenu(context),
-            const SizedBox(height: 120), // Space for bottom nav
-          ],
-        ),
-      ),
+    return StreamBuilder<UserModel?>(
+      stream: _profileService.currentUserProfileStream,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Scaffold(
+            backgroundColor: AppTheme.background,
+            body: Center(
+              child: CircularProgressIndicator(color: AppTheme.primaryGreen),
+            ),
+          );
+        }
+
+        final userProfile = snapshot.data;
+
+        return Scaffold(
+          backgroundColor: AppTheme.background,
+          body: SingleChildScrollView(
+            padding: const EdgeInsets.only(bottom: 20.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                StreamBuilder<int>(
+                  stream: NotificationService().unreadCountStream,
+                  builder: (context, countSnapshot) {
+                    return PecheTechHeader(
+                      profileImageUrl: userProfile?.photoUrl,
+                      notificationCount: countSnapshot.data ?? 0,
+                      showBackButton: true,
+                      onProfileTap: () {},
+                      onFuelTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const FuelPathScreen()),
+                        );
+                      },
+                      onNotificationsTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+                        );
+                      },
+                    );
+                  },
+                ),
+                const SizedBox(height: 10),
+                _buildMainProfileCard(userProfile),
+                const SizedBox(height: 24),
+                _buildKeyStatisticsTitle(),
+                const SizedBox(height: 16),
+                _buildKeyStatistics(),
+                const SizedBox(height: 24),
+                _buildBadgesSection(),
+                const SizedBox(height: 24),
+                _buildActionMenu(context),
+                const SizedBox(height: 120),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildMainProfileCard() {
+  Widget _buildMainProfileCard(UserModel? userProfile) {
     return Container(
       width: double.infinity,
       decoration: BoxDecoration(
@@ -45,6 +103,7 @@ class ProfileScreen extends StatelessWidget {
         ],
       ),
       padding: const EdgeInsets.all(32),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
           Stack(
@@ -64,10 +123,32 @@ class ProfileScreen extends StatelessWidget {
                   ],
                 ),
                 child: ClipOval(
-                  child: Image.asset(
-                    'assets/images/user_profile.png',
-                    fit: BoxFit.cover,
-                  ),
+                  child: userProfile?.photoUrl != null && userProfile!.photoUrl.isNotEmpty
+                    ? (userProfile.photoUrl.startsWith('data:image') && userProfile.photoUrl.contains(',')
+                        ? Image.memory(
+                            base64Decode(userProfile.photoUrl.split(',')[1]),
+                            fit: BoxFit.cover,
+                            width: 120,
+                            height: 120,
+                          )
+                        : Image.network(
+                            userProfile.photoUrl,
+                            fit: BoxFit.cover,
+                            width: 120,
+                            height: 120,
+                            errorBuilder: (context, error, stackTrace) => Image.asset(
+                              'assets/images/user_profile.png',
+                              fit: BoxFit.cover,
+                              width: 120,
+                              height: 120,
+                            ),
+                          ))
+                    : Image.asset(
+                        'assets/images/user_profile.png',
+                        fit: BoxFit.cover,
+                        width: 120,
+                        height: 120,
+                      ),
                 ),
               ),
               Positioned(
@@ -89,9 +170,9 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          const Text(
-            "Capitaine Diop",
-            style: TextStyle(
+          Text(
+            userProfile?.fullName ?? "Utilisateur inconnu",
+            style: const TextStyle(
               fontSize: 28,
               fontWeight: FontWeight.bold,
               color: AppTheme.textPrimary,
@@ -99,9 +180,9 @@ class ProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 4),
-          const Text(
-            "Pêcheur Artisan",
-            style: TextStyle(
+          Text(
+            userProfile?.role ?? "Rôle non défini",
+            style: const TextStyle(
               fontSize: 18,
               color: AppTheme.textSecondary,
               fontWeight: FontWeight.w500,
@@ -114,14 +195,14 @@ class ProfileScreen extends StatelessWidget {
               color: const Color(0xFFF0FDF4),
               borderRadius: BorderRadius.circular(20),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(Icons.location_on, color: AppTheme.primaryGreen, size: 16),
-                SizedBox(width: 6),
+                const Icon(Icons.location_on, color: AppTheme.primaryGreen, size: 16),
+                const SizedBox(width: 6),
                 Text(
-                  "DAKAR, SÉNÉGAL",
-                  style: TextStyle(
+                  userProfile?.fishingZone.isNotEmpty == true ? userProfile!.fishingZone.toUpperCase() : "ZONE NON DÉFINIE",
+                  style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
                     color: AppTheme.primaryGreen,
@@ -136,29 +217,32 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildKeyStatisticsTitle() {
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: Text(
+        "Statistiques Clés",
+        style: TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+          color: AppTheme.textPrimary,
+        ),
+      ),
+    );
+  }
+
   Widget _buildKeyStatistics() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Statistiques Clés",
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: AppTheme.textPrimary,
-          ),
-        ),
-        const SizedBox(height: 16),
-        Row(
-          children: [
-            Expanded(child: _buildStatCard("CAPTURES TOTALES", "1.2t", false)),
-            const SizedBox(width: 12),
-            Expanded(child: _buildStatCard("SCORE DURABILITÉ", "94", true)),
-            const SizedBox(width: 12),
-            Expanded(child: _buildStatCard("JOURS EN MER", "156", false)),
-          ],
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Row(
+        children: [
+          Expanded(child: _buildStatCard("CAPTURES TOTALES", "1.2t", false)),
+          const SizedBox(width: 12),
+          Expanded(child: _buildStatCard("SCORE DURABILITÉ", "94", true)),
+          const SizedBox(width: 12),
+          Expanded(child: _buildStatCard("JOURS EN MER", "156", false)),
+        ],
+      ),
     );
   }
 
@@ -203,47 +287,50 @@ class ProfileScreen extends StatelessWidget {
   }
 
   Widget _buildBadgesSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            const Text(
-              "Badges & Succès",
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: AppTheme.textPrimary,
-              ),
-            ),
-            TextButton(
-              onPressed: () {},
-              child: const Text(
-                "Voir tout",
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                "Badges & Succès",
                 style: TextStyle(
-                  color: AppTheme.primaryGreen,
+                  fontSize: 22,
                   fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 8),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              _buildBadgeTile("Gardien de la Mer", Icons.shield, const Color(0xFF0D9488)),
-              const SizedBox(width: 12),
-              _buildBadgeTile("Pêcheur Expert", Icons.stars, const Color(0xFFF59E0B)),
-              const SizedBox(width: 12),
-              _buildBadgeTile("Éco-Respon.", Icons.eco, const Color(0xFF10B981)),
-              const SizedBox(width: 12),
+              TextButton(
+                onPressed: () {},
+                child: const Text(
+                  "Voir tout",
+                  style: TextStyle(
+                    color: AppTheme.primaryGreen,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ],
           ),
-        ),
-      ],
+          const SizedBox(height: 8),
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: [
+                _buildBadgeTile("Gardien de la Mer", Icons.shield, const Color(0xFF0D9488)),
+                const SizedBox(width: 12),
+                _buildBadgeTile("Pêcheur Expert", Icons.stars, const Color(0xFFF59E0B)),
+                const SizedBox(width: 12),
+                _buildBadgeTile("Éco-Respon.", Icons.eco, const Color(0xFF10B981)),
+                const SizedBox(width: 12),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -302,11 +389,22 @@ class ProfileScreen extends StatelessWidget {
           ),
         ],
       ),
+      margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          _buildMenuItem(Icons.edit, "Modifier le profil", const Color(0xFFF1F5F9), const Color(0xFF64748B), onTap: () {}),
+          _buildMenuItem(Icons.edit, "Modifier le profil", const Color(0xFFF1F5F9), const Color(0xFF64748B), onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const EditProfileScreen()),
+            );
+          }),
           _buildMenuItem(Icons.menu_book, "Journal d'activité", const Color(0xFFF1F5F9), const Color(0xFF64748B), onTap: () {}),
-          _buildMenuItem(Icons.settings, "Paramètres", const Color(0xFFF1F5F9), const Color(0xFF64748B), onTap: () {}),
+          _buildMenuItem(Icons.settings, "Paramètres", const Color(0xFFF1F5F9), const Color(0xFF64748B), onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const SettingsScreen()),
+            );
+          }),
           _buildMenuItem(
             Icons.logout,
             "Déconnexion",
@@ -337,22 +435,14 @@ class ProfileScreen extends StatelessWidget {
           CupertinoDialogAction(
             isDestructiveAction: true,
             onPressed: () async {
-              debugPrint('ProfileScreen: Logout button pressed.');
-              // Close the dialog
               try {
                 Navigator.of(dialogContext, rootNavigator: true).pop();
-                debugPrint('ProfileScreen: Logout dialog closed.');
               } catch (e) {
                 debugPrint('ProfileScreen: Error closing dialog: $e');
               }
               
               try {
-                debugPrint('ProfileScreen: Calling AuthService().signOut()...');
-                // Perform logout logic
                 await AuthService().signOut();
-                debugPrint('ProfileScreen: AuthService().signOut() completed.');
-                
-                // Show toast using the screen context
                 if (screenContext.mounted) {
                   CustomToast.show(
                     screenContext,
@@ -361,7 +451,6 @@ class ProfileScreen extends StatelessWidget {
                   );
                 }
               } catch (e) {
-                debugPrint('ProfileScreen: Error during logout: $e');
                 if (screenContext.mounted) {
                   CustomToast.show(
                     screenContext,
@@ -391,41 +480,41 @@ class ProfileScreen extends StatelessWidget {
       borderRadius: BorderRadius.circular(isLast ? 24 : 0),
       child: Column(
         children: [
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: iconBg,
-                  borderRadius: BorderRadius.circular(12),
+          Padding(
+            padding: const EdgeInsets.all(16),
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: iconBg,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Icon(icon, color: iconColor, size: 22),
                 ),
-                child: Icon(icon, color: iconColor, size: 22),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: iconColor == Colors.red ? Colors.red : AppTheme.textPrimary,
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: iconColor == Colors.red ? Colors.red : AppTheme.textPrimary,
+                    ),
                   ),
                 ),
-              ),
-              Icon(
-                iconColor == Colors.red ? Icons.logout : Icons.chevron_right,
-                color: iconColor.withValues(alpha: 0.3),
-                size: 20,
-              ),
-            ],
+                Icon(
+                  iconColor == Colors.red ? Icons.logout : Icons.chevron_right,
+                  color: iconColor.withValues(alpha: 0.3),
+                  size: 20,
+                ),
+              ],
+            ),
           ),
-        ),
-        if (!isLast)
-          const Divider(height: 1, color: Color(0xFFF1F5F9), indent: 70),
-      ],
-    ),
-  );
-}
+          if (!isLast)
+            const Divider(height: 1, color: Color(0xFFF1F5F9), indent: 70),
+        ],
+      ),
+    );
+  }
 }

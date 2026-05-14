@@ -1,14 +1,29 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
+import '../../profile/data/services/profile_service.dart';
 
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   late final GoogleSignIn _googleSignIn;
+  final ProfileService _profileService = ProfileService();
 
   AuthService() {
     if (!kIsWeb) {
       _googleSignIn = GoogleSignIn.instance;
+    }
+  }
+
+  Future<void> _ensureUserProfile(User user) async {
+    final profile = await _profileService.getUserProfile(user.uid);
+    if (profile == null) {
+      await _profileService.createInitialProfile(
+        uid: user.uid,
+        fullName: user.displayName ?? 'Utilisateur',
+        email: user.email ?? '',
+        phoneNumber: user.phoneNumber ?? '',
+        role: 'Pêcheur', // Default role
+      );
     }
   }
 
@@ -39,10 +54,14 @@ class AuthService {
   // Email & Password Login
   Future<UserCredential?> loginWithEmail(String email, String password) async {
     try {
-      return await _auth.signInWithEmailAndPassword(
+      final cred = await _auth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+      if (cred.user != null) {
+        await _ensureUserProfile(cred.user!);
+      }
+      return cred;
     } on FirebaseAuthException catch (_) {
       rethrow;
     } catch (_) {
@@ -86,12 +105,18 @@ class AuthService {
   Future<UserCredential?> signInWithPhone(
       {String? smsCode, PhoneAuthCredential? credential}) async {
     try {
+      UserCredential? cred;
       if (kIsWeb && _webConfirmationResult != null && smsCode != null) {
-        return await _webConfirmationResult!.confirm(smsCode);
+        cred = await _webConfirmationResult!.confirm(smsCode);
       } else if (credential != null) {
-        return await _auth.signInWithCredential(credential);
+        cred = await _auth.signInWithCredential(credential);
       }
-      return null;
+      
+      if (cred != null && cred.user != null) {
+        await _ensureUserProfile(cred.user!);
+      }
+      
+      return cred;
     } on FirebaseAuthException catch (_) {
       rethrow;
     } catch (_) {
@@ -108,20 +133,30 @@ class AuthService {
   // Google Sign In
   Future<UserCredential?> signInWithGoogle() async {
     try {
+      UserCredential? cred;
       if (kIsWeb) {
         final GoogleAuthProvider googleProvider = GoogleAuthProvider();
-        return await _auth.signInWithPopup(googleProvider);
+        cred = await _auth.signInWithPopup(googleProvider);
       } else {
         final googleUser = await _googleSignIn.authenticate();
         final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
+        if (googleAuth.idToken == null) {
+          throw Exception("Impossible de récupérer le jeton ID d'authentification.");
+        }
+
         final AuthCredential credential = GoogleAuthProvider.credential(
-          accessToken: null,
           idToken: googleAuth.idToken,
         );
 
-        return await _auth.signInWithCredential(credential);
+        cred = await _auth.signInWithCredential(credential);
       }
+      
+      if (cred.user != null) {
+        await _ensureUserProfile(cred.user!);
+      }
+      
+      return cred;
     } catch (e) {
       debugPrint('AuthService: Google Sign-In error: $e');
       rethrow;
@@ -151,5 +186,29 @@ class AuthService {
     }
     _webConfirmationResult = null;
     debugPrint('AuthService: signOut process completed.');
+  }
+
+  // Change Password
+  Future<void> changePassword(String currentPassword, String newPassword) async {
+    final user = _auth.currentUser;
+    if (user == null || user.email == null) {
+      throw Exception("Utilisateur non connecté ou email absent.");
+    }
+
+    try {
+      // Re-authenticate
+      AuthCredential credential = EmailAuthProvider.credential(
+        email: user.email!,
+        password: currentPassword,
+      );
+      await user.reauthenticateWithCredential(credential);
+      
+      // Update password
+      await user.updatePassword(newPassword);
+    } on FirebaseAuthException catch (_) {
+      rethrow;
+    } catch (_) {
+      throw Exception('Une erreur est survenue lors de la modification du mot de passe.');
+    }
   }
 }

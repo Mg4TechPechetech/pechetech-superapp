@@ -6,6 +6,7 @@ import 'package:google_fonts/google_fonts.dart';
 import '../data/auth_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/custom_toast.dart';
+import '../../profile/data/services/profile_service.dart';
 
 class RegistrationScreen extends StatefulWidget {
   const RegistrationScreen({super.key});
@@ -20,6 +21,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final _phoneController = TextEditingController();
   final _passwordController = TextEditingController();
   final _authService = AuthService();
+  final _profileService = ProfileService();
   bool _isLoading = false;
   bool _acceptTerms = false;
   bool _obscurePassword = true;
@@ -128,6 +130,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       setState(() => _isLoading = false);
 
       if (user != null) {
+        await _profileService.createInitialProfile(
+          uid: user.user!.uid,
+          fullName: name,
+          email: email,
+          phoneNumber: phone,
+          role: _selectedRole,
+        );
+
         if (mounted) {
           FocusScope.of(context).unfocus();
           CustomToast.show(
