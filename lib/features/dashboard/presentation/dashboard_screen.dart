@@ -53,13 +53,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
           : 'yoff';
 
       // 3. Charger la météo pour cette zone spécifique
-      final weatherData = await _weatherService.getCurrentWeather(siteId: siteId);
-      final zonesData = await _predictionService.getFishingZonesToday();
+      // OPTIMIZATION: Use Future.wait to fetch independent API calls concurrently,
+      // significantly reducing total loading time.
+      final results = await Future.wait([
+        _weatherService.getCurrentWeather(siteId: siteId),
+        _predictionService.getFishingZonesToday(),
+      ]);
       
       if (mounted) {
         setState(() {
-          _currentWeatherModel = weatherData;
-          _fishingZones = zonesData;
+          _currentWeatherModel = results[0] as WeatherModel;
+          _fishingZones = results[1] as List<FishingZoneModel>;
           _isLoading = false;
           _hasError = false;
         });
