@@ -52,14 +52,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ? _userProfile!.fishingZone
           : 'yoff';
 
-      // 3. Charger la météo pour cette zone spécifique
-      final weatherData = await _weatherService.getCurrentWeather(siteId: siteId);
-      final zonesData = await _predictionService.getFishingZonesToday();
+      // 3. Charger la météo pour cette zone spécifique (Optimization: Run independent requests concurrently)
+      // This reduces total load time since both network requests happen at the same time
+      final results = await Future.wait([
+        _weatherService.getCurrentWeather(siteId: siteId),
+        _predictionService.getFishingZonesToday()
+      ]);
       
       if (mounted) {
         setState(() {
-          _currentWeatherModel = weatherData;
-          _fishingZones = zonesData;
+          _currentWeatherModel = results[0] as WeatherModel;
+          _fishingZones = results[1] as List<FishingZoneModel>;
           _isLoading = false;
           _hasError = false;
         });
@@ -282,7 +285,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Widget _buildWelcomeSection() {
     return StreamBuilder<UserModel?>(
-      stream: ProfileService().currentUserProfileStream,
+      stream: _profileService.currentUserProfileStream,
       builder: (context, snapshot) {
         final userName = snapshot.data?.fullName ?? "Utilisateur";
         return Column(
