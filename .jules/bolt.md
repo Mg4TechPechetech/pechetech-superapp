@@ -1,0 +1,3 @@
+## 2024-05-16 - Parallelizing UI Data Fetching Safely
+**Learning:** Sequential `await` statements in Flutter's `initState` loading methods (like in `DashboardScreen` and `BenefitsDashboard`) sum up the network latencies. While `Future.wait` solves this, it returns a `List<dynamic>`, forcing manual type casting which reduces static type safety and increases risk of errors.
+**Action:** In Dart 3+, always use the `(Future1, Future2).wait` records extension to parallelize independent network requests. This approach maintains complete type safety for the concurrently awaited values without any manual casting, preventing runtime type errors.
