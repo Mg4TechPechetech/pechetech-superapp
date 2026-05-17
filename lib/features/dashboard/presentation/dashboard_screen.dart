@@ -53,8 +53,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           : 'yoff';
 
       // 3. Charger la météo pour cette zone spécifique
-      final weatherData = await _weatherService.getCurrentWeather(siteId: siteId);
-      final zonesData = await _predictionService.getFishingZonesToday();
+      // ⚡ Bolt Optimization: Run independent network requests in parallel
+      // Expected performance impact: Reduces total wait time from (time_weather + time_zones) to max(time_weather, time_zones).
+      // Uses Dart 3 records parallelization for strict type safety compared to Future.wait([])
+      final (weatherData, zonesData) = await (
+        _weatherService.getCurrentWeather(siteId: siteId),
+        _predictionService.getFishingZonesToday(),
+      ).wait;
       
       if (mounted) {
         setState(() {
