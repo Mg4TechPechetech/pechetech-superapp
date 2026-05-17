@@ -1,0 +1,3 @@
+## 2024-05-17 - [Dart 3 Parallelization]
+**Learning:** Sequential `await` calls on independent asynchronous operations create a significant performance bottleneck. While `Future.wait([])` was traditionally used, it returns a `List<dynamic>` leading to type-safety issues and manual casting.
+**Action:** When fetching independent data sources (e.g., in dashboards loading user data, weather, and expenses), always use the Dart 3 records parallelization pattern `final (result1, result2) = await (future1, future2).wait;` to reduce total fetch time while maintaining strict type safety.
