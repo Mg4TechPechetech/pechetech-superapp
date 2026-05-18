@@ -53,8 +53,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           : 'yoff';
 
       // 3. Charger la météo pour cette zone spécifique
-      final weatherData = await _weatherService.getCurrentWeather(siteId: siteId);
-      final zonesData = await _predictionService.getFishingZonesToday();
+      // Optimization: Fetch weather and zones data in parallel using Dart 3 records
+      final (weatherData, zonesData) = await (
+        _weatherService.getCurrentWeather(siteId: siteId),
+        _predictionService.getFishingZonesToday(),
+      ).wait;
       
       if (mounted) {
         setState(() {

@@ -1,0 +1,3 @@
+## 2024-05-24 - Dart 3 Records Extension for Parallel Requests
+**Learning:** Using Dart 3 `(Future1, Future2).wait` records extension to parallelize independent asynchronous requests is a much safer and cleaner approach than using the traditional `Future.wait([])`. It natively maintains strict type safety for the awaited values, entirely preventing the runtime errors and overhead caused by manually casting from `List<dynamic>`, a common pain point in this codebase.
+**Action:** Always prefer the records extension `(F1, F2).wait` over `Future.wait([])` when awaiting multiple, differently-typed asynchronous operations in parallel throughout the application to ensure type safety and reduce boilerplate casting.
