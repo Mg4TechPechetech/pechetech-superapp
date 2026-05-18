@@ -27,8 +27,11 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        final solvabilityData = await _financeService.getSolvabilityScore(user.uid);
-        final expensesData = await _financeService.getUserExpenses(user.uid);
+        // Optimization: Fetch solvability score and expenses data in parallel using Dart 3 records
+        final (solvabilityData, expensesData) = await (
+          _financeService.getSolvabilityScore(user.uid),
+          _financeService.getUserExpenses(user.uid),
+        ).wait;
         
         setState(() {
           _solvabilityData = solvabilityData['data'];
