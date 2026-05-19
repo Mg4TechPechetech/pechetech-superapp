@@ -5,26 +5,34 @@ import 'package:http_parser/http_parser.dart';
 import 'package:universal_io/io.dart';
 
 class FinanceService {
-  static const String baseUrl = 'http://localhost:8080/api/v1'; // Use Gateway port
+  static const String baseUrl =
+      'http://localhost:8080/api/v1'; // Use Gateway port
 
   Future<Map<String, dynamic>> extractReceiptData(dynamic imageInput) async {
-    var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/ocr/extract'));
-    
+    var request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/ocr/extract'),
+    );
+
     if (kIsWeb) {
       // imageInput should be Uint8List on Web
-      request.files.add(http.MultipartFile.fromBytes(
-        'file',
-        imageInput,
-        filename: 'receipt.jpg',
-        contentType: MediaType('image', 'jpeg'),
-      ));
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'file',
+          imageInput,
+          filename: 'receipt.jpg',
+          contentType: MediaType('image', 'jpeg'),
+        ),
+      );
     } else {
       // imageInput should be File on Mobile
-      request.files.add(await http.MultipartFile.fromPath(
-        'file',
-        imageInput.path,
-        contentType: MediaType('image', 'jpeg'),
-      ));
+      request.files.add(
+        await http.MultipartFile.fromPath(
+          'file',
+          imageInput.path,
+          contentType: MediaType('image', 'jpeg'),
+        ),
+      );
     }
 
     var streamedResponse = await request.send();
@@ -50,7 +58,9 @@ class FinanceService {
   }
 
   Future<Map<String, dynamic>> getSolvabilityScore(String userId) async {
-    final response = await http.get(Uri.parse('$baseUrl/expenses/solvability/$userId'));
+    final response = await http.get(
+      Uri.parse('$baseUrl/expenses/solvability/$userId'),
+    );
 
     if (response.statusCode == 200) {
       return json.decode(response.body);
@@ -60,7 +70,9 @@ class FinanceService {
   }
 
   Future<List<dynamic>> getUserExpenses(String userId) async {
-    final response = await http.get(Uri.parse('$baseUrl/expenses/user/$userId'));
+    final response = await http.get(
+      Uri.parse('$baseUrl/expenses/user/$userId'),
+    );
 
     if (response.statusCode == 200) {
       final data = json.decode(response.body);

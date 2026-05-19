@@ -33,12 +33,17 @@ class NotificationModel {
     };
   }
 
-  factory NotificationModel.fromMap(Map<String, dynamic> map, String documentId) {
+  factory NotificationModel.fromMap(
+    Map<String, dynamic> map,
+    String documentId,
+  ) {
     return NotificationModel(
       id: documentId,
       title: map['title'] ?? '',
       description: map['description'] ?? '',
-      timestamp: map['timestamp'] != null ? (map['timestamp'] as Timestamp).toDate() : DateTime.now(),
+      timestamp: map['timestamp'] != null
+          ? (map['timestamp'] as Timestamp).toDate()
+          : DateTime.now(),
       type: map['type'] ?? 'info',
       isRead: map['isRead'] ?? false,
       userId: map['userId'],

@@ -16,7 +16,9 @@ class PredictionService {
       final response = await httpClient.get(Uri.parse('$baseUrl/zones/today'));
       if (response.statusCode == 200) {
         Iterable l = json.decode(response.body);
-        return List<FishingZoneModel>.from(l.map((model) => FishingZoneModel.fromJson(model)));
+        return List<FishingZoneModel>.from(
+          l.map((model) => FishingZoneModel.fromJson(model)),
+        );
       } else {
         throw Exception('Failed to load fishing zones');
       }

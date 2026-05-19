@@ -20,10 +20,10 @@ class NotificationService {
         .orderBy('timestamp', descending: true)
         .snapshots()
         .map((snapshot) {
-      return snapshot.docs.map((doc) {
-        return NotificationModel.fromMap(doc.data(), doc.id);
-      }).toList();
-    });
+          return snapshot.docs.map((doc) {
+            return NotificationModel.fromMap(doc.data(), doc.id);
+          }).toList();
+        });
   }
 
   Stream<int> get unreadCountStream {
@@ -32,9 +32,9 @@ class NotificationService {
     return getUnreadCount(user.uid);
   }
 
-  // Note: whereIn with null might be tricky in some Firebase versions. 
+  // Note: whereIn with null might be tricky in some Firebase versions.
   // Alternative is Filter.or if available.
-  
+
   Stream<List<NotificationModel>> getNotifications(String? userId) {
     if (userId == null) return Stream.value([]);
 
@@ -44,9 +44,12 @@ class NotificationService {
         .snapshots()
         .map((snapshot) {
           // Filter in memory for simplicity if complex Firestore queries are limited
-          return snapshot.docs.map((doc) {
-            return NotificationModel.fromMap(doc.data(), doc.id);
-          }).where((n) => n.userId == null || n.userId == userId).toList();
+          return snapshot.docs
+              .map((doc) {
+                return NotificationModel.fromMap(doc.data(), doc.id);
+              })
+              .where((n) => n.userId == null || n.userId == userId)
+              .toList();
         });
   }
 
@@ -78,7 +81,7 @@ class NotificationService {
     }
     await batch.commit();
   }
-  
+
   Stream<int> getUnreadCount(String? userId) {
     if (userId == null) return Stream.value(0);
 
@@ -98,7 +101,8 @@ class NotificationService {
     final notifications = [
       {
         'title': 'Alerte Météo - Houle forte',
-        'description': 'Attention, une houle de 2.5m est prévue pour demain matin. Soyez prudent en mer.',
+        'description':
+            'Attention, une houle de 2.5m est prévue pour demain matin. Soyez prudent en mer.',
         'type': 'weather',
         'timestamp': Timestamp.now(),
         'isRead': false,
@@ -106,33 +110,45 @@ class NotificationService {
       },
       {
         'title': 'Subvention Carburant',
-        'description': 'Votre demande de subvention pour le mois de Mai a été approuvée. Code: PT-8829.',
+        'description':
+            'Votre demande de subvention pour le mois de Mai a été approuvée. Code: PT-8829.',
         'type': 'fuel',
-        'timestamp': Timestamp.fromDate(DateTime.now().subtract(const Duration(hours: 5))),
+        'timestamp': Timestamp.fromDate(
+          DateTime.now().subtract(const Duration(hours: 5)),
+        ),
         'isRead': true,
         'userId': userId,
       },
       {
         'title': 'Prix du Marché',
-        'description': 'Le prix du Thon rouge est en hausse de 15% au port de Dakar.',
+        'description':
+            'Le prix du Thon rouge est en hausse de 15% au port de Dakar.',
         'type': 'market',
-        'timestamp': Timestamp.fromDate(DateTime.now().subtract(const Duration(days: 1))),
+        'timestamp': Timestamp.fromDate(
+          DateTime.now().subtract(const Duration(days: 1)),
+        ),
         'isRead': false,
         'userId': userId,
       },
       {
         'title': 'Nouveau message communautaire',
-        'description': 'Un nouveau sujet sur les filets biodégradables a été lancé dans votre zone.',
+        'description':
+            'Un nouveau sujet sur les filets biodégradables a été lancé dans votre zone.',
         'type': 'community',
-        'timestamp': Timestamp.fromDate(DateTime.now().subtract(const Duration(hours: 2))),
+        'timestamp': Timestamp.fromDate(
+          DateTime.now().subtract(const Duration(hours: 2)),
+        ),
         'isRead': false,
         'userId': userId,
       },
       {
         'title': 'Rappel Journal de bord',
-        'description': 'N\'oubliez pas de remplir votre journal de bord pour votre sortie d\'hier.',
+        'description':
+            'N\'oubliez pas de remplir votre journal de bord pour votre sortie d\'hier.',
         'type': 'journal',
-        'timestamp': Timestamp.fromDate(DateTime.now().subtract(const Duration(days: 2))),
+        'timestamp': Timestamp.fromDate(
+          DateTime.now().subtract(const Duration(days: 2)),
+        ),
         'isRead': true,
         'userId': userId,
       },

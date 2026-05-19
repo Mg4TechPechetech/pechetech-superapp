@@ -12,7 +12,7 @@ class FuelPathScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser?.uid;
-    
+
     return Scaffold(
       backgroundColor: AppTheme.background,
       body: SafeArea(
@@ -21,7 +21,10 @@ class FuelPathScreen extends StatelessWidget {
             _buildHeader(context, userId),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 10.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -54,11 +57,13 @@ class FuelPathScreen extends StatelessWidget {
           onNotificationsTap: () {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+              MaterialPageRoute(
+                builder: (context) => const NotificationsScreen(),
+              ),
             );
           },
         );
-      }
+      },
     );
   }
 
@@ -77,10 +82,7 @@ class FuelPathScreen extends StatelessWidget {
         SizedBox(height: 4),
         Text(
           "Prêt pour la marée du jour",
-          style: TextStyle(
-            fontSize: 16,
-            color: AppTheme.textSecondary,
-          ),
+          style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
         ),
       ],
     );
@@ -135,8 +137,11 @@ class FuelPathScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: const Center(
-                child: Icon(Icons.qr_code_2,
-                    size: 120, color: Colors.black), // QR Code mockup
+                child: Icon(
+                  Icons.qr_code_2,
+                  size: 120,
+                  color: Colors.black,
+                ), // QR Code mockup
               ),
             ),
           ),
@@ -206,9 +211,10 @@ class FuelPathScreen extends StatelessWidget {
                   Text(
                     "ZONE RECOMMANDÉE",
                     style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                        fontWeight: FontWeight.bold),
+                      color: Colors.white,
+                      fontSize: 10,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ],
               ),
@@ -223,7 +229,8 @@ class FuelPathScreen extends StatelessWidget {
             color: const Color(0xFF1E293B), // Dark placeholder for map
             image: const DecorationImage(
               image: AssetImage(
-                  'assets/images/pechetech_logo.png'), // placeholder, ideally a map asset
+                'assets/images/pechetech_logo.png',
+              ), // placeholder, ideally a map asset
               opacity: 0.1,
               fit: BoxFit.cover,
             ),
@@ -247,8 +254,10 @@ class FuelPathScreen extends StatelessWidget {
                     border: Border.all(color: AppTheme.primaryGreen, width: 2),
                   ),
                   child: const Center(
-                    child:
-                        Icon(Icons.my_location, color: AppTheme.primaryGreen),
+                    child: Icon(
+                      Icons.my_location,
+                      color: AppTheme.primaryGreen,
+                    ),
                   ),
                 ),
               ),
@@ -262,7 +271,9 @@ class FuelPathScreen extends StatelessWidget {
                     filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Container(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 12, horizontal: 16),
+                        vertical: 12,
+                        horizontal: 16,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.8),
                         borderRadius: BorderRadius.circular(12),
@@ -272,15 +283,20 @@ class FuelPathScreen extends StatelessWidget {
                         children: [
                           _buildMapStat("ZONE", "A-1", AppTheme.primaryGreen),
                           Container(
-                              width: 1,
-                              height: 24,
-                              color: const Color(0xFFE2E8F0)),
+                            width: 1,
+                            height: 24,
+                            color: const Color(0xFFE2E8F0),
+                          ),
                           _buildMapStat(
-                              "DISTANCE", "12km", AppTheme.textPrimary),
+                            "DISTANCE",
+                            "12km",
+                            AppTheme.textPrimary,
+                          ),
                           Container(
-                              width: 1,
-                              height: 24,
-                              color: const Color(0xFFE2E8F0)),
+                            width: 1,
+                            height: 24,
+                            color: const Color(0xFFE2E8F0),
+                          ),
                           _buildMapStat("THION", "85%", AppTheme.primaryGreen),
                         ],
                       ),
@@ -303,15 +319,19 @@ class FuelPathScreen extends StatelessWidget {
           Text(
             label,
             style: const TextStyle(
-                fontSize: 10,
-                color: AppTheme.textSecondary,
-                fontWeight: FontWeight.bold),
+              fontSize: 10,
+              color: AppTheme.textSecondary,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 2),
           Text(
             value,
             style: TextStyle(
-                fontSize: 16, fontWeight: FontWeight.bold, color: valueColor),
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: valueColor,
+            ),
           ),
         ],
       ),
@@ -347,14 +367,19 @@ class FuelPathScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const Text("Espèce",
-                  style: TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontWeight: FontWeight.w500)),
+              const Text(
+                "Espèce",
+                style: TextStyle(
+                  color: AppTheme.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               const SizedBox(height: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF8FAFC),
                   borderRadius: BorderRadius.circular(12),
@@ -363,21 +388,28 @@ class FuelPathScreen extends StatelessWidget {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("Thion, Capitaine, Dorade...",
-                        style: TextStyle(color: Color(0xFF94A3B8))),
+                    Text(
+                      "Thion, Capitaine, Dorade...",
+                      style: TextStyle(color: Color(0xFF94A3B8)),
+                    ),
                     Icon(Icons.search, color: Color(0xFF94A3B8)),
                   ],
                 ),
               ),
               const SizedBox(height: 16),
-              const Text("Poids (kg)",
-                  style: TextStyle(
-                      color: AppTheme.textSecondary,
-                      fontWeight: FontWeight.w500)),
+              const Text(
+                "Poids (kg)",
+                style: TextStyle(
+                  color: AppTheme.textSecondary,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
               const SizedBox(height: 8),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 decoration: BoxDecoration(
                   color: const Color(0xFFF8FAFC),
                   borderRadius: BorderRadius.circular(12),
@@ -386,15 +418,21 @@ class FuelPathScreen extends StatelessWidget {
                 child: const Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text("0.00",
-                        style: TextStyle(
-                            color: AppTheme.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold)),
-                    Text("kg",
-                        style: TextStyle(
-                            color: AppTheme.textSecondary,
-                            fontWeight: FontWeight.w500)),
+                    Text(
+                      "0.00",
+                      style: TextStyle(
+                        color: AppTheme.textPrimary,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    Text(
+                      "kg",
+                      style: TextStyle(
+                        color: AppTheme.textSecondary,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
                   ],
                 ),
               ),
@@ -414,9 +452,10 @@ class FuelPathScreen extends StatelessWidget {
                   child: const Text(
                     "Valider la capture",
                     style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

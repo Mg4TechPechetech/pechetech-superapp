@@ -38,7 +38,9 @@ class AuthService {
 
   // Email & Password Registration
   Future<UserCredential?> registerWithEmail(
-      String email, String password) async {
+    String email,
+    String password,
+  ) async {
     try {
       return await _auth.createUserWithEmailAndPassword(
         email: email,
@@ -76,7 +78,8 @@ class AuthService {
     required Function(FirebaseAuthException) verificationFailed,
     required Function(String, int?) codeSent,
     required Function(String) codeAutoRetrievalTimeout,
-    dynamic webVerifier, // Using dynamic to avoid conditional import issues for now
+    dynamic
+    webVerifier, // Using dynamic to avoid conditional import issues for now
   }) async {
     if (kIsWeb) {
       try {
@@ -102,8 +105,10 @@ class AuthService {
   }
 
   // Phone Authentication: Sign In with Credential or SMS Code
-  Future<UserCredential?> signInWithPhone(
-      {String? smsCode, PhoneAuthCredential? credential}) async {
+  Future<UserCredential?> signInWithPhone({
+    String? smsCode,
+    PhoneAuthCredential? credential,
+  }) async {
     try {
       UserCredential? cred;
       if (kIsWeb && _webConfirmationResult != null && smsCode != null) {
@@ -111,11 +116,11 @@ class AuthService {
       } else if (credential != null) {
         cred = await _auth.signInWithCredential(credential);
       }
-      
+
       if (cred != null && cred.user != null) {
         await _ensureUserProfile(cred.user!);
       }
-      
+
       return cred;
     } on FirebaseAuthException catch (_) {
       rethrow;
@@ -126,7 +131,8 @@ class AuthService {
 
   // Legacy for backward compatibility in existing code
   Future<UserCredential?> signInWithPhoneCredential(
-      PhoneAuthCredential credential) async {
+    PhoneAuthCredential credential,
+  ) async {
     return signInWithPhone(credential: credential);
   }
 
@@ -142,7 +148,9 @@ class AuthService {
         final GoogleSignInAuthentication googleAuth = googleUser.authentication;
 
         if (googleAuth.idToken == null) {
-          throw Exception("Impossible de récupérer le jeton ID d'authentification.");
+          throw Exception(
+            "Impossible de récupérer le jeton ID d'authentification.",
+          );
         }
 
         final AuthCredential credential = GoogleAuthProvider.credential(
@@ -151,11 +159,11 @@ class AuthService {
 
         cred = await _auth.signInWithCredential(credential);
       }
-      
+
       if (cred.user != null) {
         await _ensureUserProfile(cred.user!);
       }
-      
+
       return cred;
     } catch (e) {
       debugPrint('AuthService: Google Sign-In error: $e');
@@ -189,7 +197,10 @@ class AuthService {
   }
 
   // Change Password
-  Future<void> changePassword(String currentPassword, String newPassword) async {
+  Future<void> changePassword(
+    String currentPassword,
+    String newPassword,
+  ) async {
     final user = _auth.currentUser;
     if (user == null || user.email == null) {
       throw Exception("Utilisateur non connecté ou email absent.");
@@ -202,13 +213,15 @@ class AuthService {
         password: currentPassword,
       );
       await user.reauthenticateWithCredential(credential);
-      
+
       // Update password
       await user.updatePassword(newPassword);
     } on FirebaseAuthException catch (_) {
       rethrow;
     } catch (_) {
-      throw Exception('Une erreur est survenue lors de la modification du mot de passe.');
+      throw Exception(
+        'Une erreur est survenue lors de la modification du mot de passe.',
+      );
     }
   }
 }

@@ -31,14 +31,8 @@ class AppTheme {
           color: textPrimary,
           letterSpacing: -0.24,
         ),
-        bodyLarge: GoogleFonts.publicSans(
-          fontSize: 16,
-          color: textPrimary,
-        ),
-        bodyMedium: GoogleFonts.publicSans(
-          fontSize: 14,
-          color: textSecondary,
-        ),
+        bodyLarge: GoogleFonts.publicSans(fontSize: 16, color: textPrimary),
+        bodyMedium: GoogleFonts.publicSans(fontSize: 14, color: textSecondary),
         labelLarge: GoogleFonts.publicSans(
           fontSize: 12,
           fontWeight: FontWeight.bold,

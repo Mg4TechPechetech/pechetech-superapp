@@ -160,21 +160,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       }
 
       if (mounted) {
-        CustomToast.show(
-          context,
-          message: errorMessage,
-          type: ToastType.error,
-        );
+        CustomToast.show(context, message: errorMessage, type: ToastType.error);
       }
     }
   }
- 
+
   Future<void> _handleGoogleSignIn() async {
     setState(() => _isLoading = true);
     try {
       final user = await _authService.signInWithGoogle();
       setState(() => _isLoading = false);
- 
+
       if (user != null) {
         if (mounted) {
           FocusScope.of(context).unfocus();
@@ -196,7 +192,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       }
     }
   }
- 
+
   @override
   void dispose() {
     _nameController.dispose();
@@ -274,8 +270,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   Text(
                     'Créer un compte',
                     style: Theme.of(context).textTheme.displayLarge?.copyWith(
-                          color: const Color(0xFF161D19),
-                        ),
+                      color: const Color(0xFF161D19),
+                    ),
                   ),
                   const SizedBox(height: 8),
                   Padding(
@@ -284,9 +280,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       'Rejoignez la plateforme leader pour les professionnels de la pêche en Afrique de l\'Ouest.',
                       textAlign: TextAlign.center,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: const Color(0xFF3C4A42),
-                            height: 1.5,
-                          ),
+                        color: const Color(0xFF3C4A42),
+                        height: 1.5,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 32),
@@ -298,7 +294,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 33, vertical: 21),
+                          horizontal: 33,
+                          vertical: 21,
+                        ),
                         decoration: BoxDecoration(
                           color: Colors.white.withValues(alpha: 0.4),
                           borderRadius: BorderRadius.circular(16),
@@ -307,8 +305,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: const Color(0xFF006C49)
-                                  .withValues(alpha: 0.08),
+                              color: const Color(
+                                0xFF006C49,
+                              ).withValues(alpha: 0.08),
                               blurRadius: 32,
                               offset: const Offset(0, 8),
                             ),
@@ -376,8 +375,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             ),
                             const SizedBox(height: 8),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 8),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                              ),
                               child: Text(
                                 'Minimum 8 caractères, une majuscule et un chiffre.',
                                 style: GoogleFonts.publicSans(
@@ -402,18 +402,24 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                     onChanged: (value) =>
                                         setState(() => _acceptTerms = value!),
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(4)),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
                                     side: BorderSide(
-                                        color: Colors.white
-                                            .withValues(alpha: 0.6)),
-                                    fillColor: WidgetStateProperty.resolveWith(
-                                        (states) {
-                                      if (states
-                                          .contains(WidgetState.selected)) {
+                                      color: Colors.white.withValues(
+                                        alpha: 0.6,
+                                      ),
+                                    ),
+                                    fillColor: WidgetStateProperty.resolveWith((
+                                      states,
+                                    ) {
+                                      if (states.contains(
+                                        WidgetState.selected,
+                                      )) {
                                         return AppTheme.accentGreen;
                                       }
-                                      return Colors.white
-                                          .withValues(alpha: 0.3);
+                                      return Colors.white.withValues(
+                                        alpha: 0.3,
+                                      );
                                     }),
                                   ),
                                 ),
@@ -470,8 +476,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                       children: [
                                         Text('Rejoindre PecheTech'),
                                         SizedBox(width: 8),
-                                        Icon(Icons.arrow_forward,
-                                            size: 18, color: Colors.white),
+                                        Icon(
+                                          Icons.arrow_forward,
+                                          size: 18,
+                                          color: Colors.white,
+                                        ),
                                       ],
                                     ),
                             ),
@@ -489,7 +498,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       Text(
                         'Vous avez déjà un compte ? ',
                         style: GoogleFonts.publicSans(
-                            color: const Color(0xFF3C4A42), fontSize: 16),
+                          color: const Color(0xFF3C4A42),
+                          fontSize: 16,
+                        ),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -535,7 +546,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     style: OutlinedButton.styleFrom(
                       backgroundColor: Colors.white.withValues(alpha: 0.5),
                       side: BorderSide(
-                          color: Colors.white.withValues(alpha: 0.5)),
+                        color: Colors.white.withValues(alpha: 0.5),
+                      ),
                       minimumSize: const Size.fromHeight(56),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -570,9 +582,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Widget _buildLabel(BuildContext context, String text) {
     return Text(
       text,
-      style: Theme.of(context).textTheme.labelLarge?.copyWith(
-            color: const Color(0xFF3C4A42),
-          ),
+      style: Theme.of(
+        context,
+      ).textTheme.labelLarge?.copyWith(color: const Color(0xFF3C4A42)),
     );
   }
 
@@ -594,12 +606,12 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           prefixIconPath.contains('user')
               ? Icons.person_outline
               : prefixIconPath.contains('email')
-                  ? Icons.email_outlined
-                  : prefixIconPath.contains('phone')
-                      ? Icons.phone_outlined
-                      : prefixIconPath.contains('lock')
-                          ? Icons.lock_outline
-                          : Icons.help_outline,
+              ? Icons.email_outlined
+              : prefixIconPath.contains('phone')
+              ? Icons.phone_outlined
+              : prefixIconPath.contains('lock')
+              ? Icons.lock_outline
+              : Icons.help_outline,
           color: const Color(0xFF3C4A42),
         ),
         suffixIcon: obscureText
@@ -617,13 +629,13 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                 },
               )
             : (suffixIconPath != null
-                ? Icon(
-                    suffixIconPath.contains('eye')
-                        ? Icons.visibility_outlined
-                        : Icons.help_outline,
-                    color: const Color(0xFF3C4A42),
-                  )
-                : null),
+                  ? Icon(
+                      suffixIconPath.contains('eye')
+                          ? Icons.visibility_outlined
+                          : Icons.help_outline,
+                      color: const Color(0xFF3C4A42),
+                    )
+                  : null),
       ),
     );
   }
@@ -653,6 +665,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       ),
     );
   }
+
   Widget _buildDropdownField({
     required String value,
     required List<String> items,
@@ -677,10 +690,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       icon: const Icon(Icons.keyboard_arrow_down, color: Color(0xFF3C4A42)),
       dropdownColor: const Color(0xFFF4FBF4),
       decoration: InputDecoration(
-        prefixIcon: Icon(
-          prefixIcon,
-          color: const Color(0xFF3C4A42),
-        ),
+        prefixIcon: Icon(prefixIcon, color: const Color(0xFF3C4A42)),
         filled: true,
         fillColor: Colors.white.withValues(alpha: 0.3),
         border: OutlineInputBorder(
@@ -707,10 +717,7 @@ class _BlurCircle extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }

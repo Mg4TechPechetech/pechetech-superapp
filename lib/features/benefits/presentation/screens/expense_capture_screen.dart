@@ -50,10 +50,7 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
           WebUiSettings(
             context: context,
             presentStyle: WebPresentStyle.page,
-            size: const CropperSize(
-              width: 520,
-              height: 520,
-            ),
+            size: const CropperSize(width: 520, height: 520),
           ),
         ],
       );
@@ -88,11 +85,16 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
       final result = await FinanceService().extractReceiptData(input);
       setState(() {
         final amount = result['total_amount'];
-        _amountController.text = (amount == null || amount == 0) ? 'NULL' : amount.toString();
-        
+        _amountController.text = (amount == null || amount == 0)
+            ? 'NULL'
+            : amount.toString();
+
         final supplier = result['supplier_name'];
-        _supplierController.text = (supplier == null || supplier.toString().isEmpty) ? 'NULL' : supplier;
-        
+        _supplierController.text =
+            (supplier == null || supplier.toString().isEmpty)
+            ? 'NULL'
+            : supplier;
+
         _selectedCategory = result['category'] ?? 'AUTRE';
         _aiConfidence = (result['confidence_score'] ?? 0.0).toDouble();
         _isLoading = false;
@@ -101,9 +103,9 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
       setState(() {
         _isLoading = false;
       });
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Erreur lors de l\'analyse : $e')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Erreur lors de l\'analyse : $e')));
     }
   }
 
@@ -113,7 +115,9 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
       backgroundColor: AppTheme.background,
       body: SafeArea(
         child: StreamBuilder<int>(
-          stream: NotificationService().getUnreadCount(FirebaseAuth.instance.currentUser?.uid),
+          stream: NotificationService().getUnreadCount(
+            FirebaseAuth.instance.currentUser?.uid,
+          ),
           builder: (context, snapshot) {
             return Column(
               children: [
@@ -122,19 +126,25 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
                   notificationCount: snapshot.data ?? 0,
                   onFuelTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const FuelPathScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const FuelPathScreen(),
+                    ),
                   ),
                   onNotificationsTap: () => Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+                    MaterialPageRoute(
+                      builder: (context) => const NotificationsScreen(),
+                    ),
                   ),
                 ),
                 Expanded(
-                  child: _imageFile == null ? _buildInitialState() : _buildValidationState(),
+                  child: _imageFile == null
+                      ? _buildInitialState()
+                      : _buildValidationState(),
                 ),
               ],
             );
-          }
+          },
         ),
       ),
     );
@@ -145,7 +155,11 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.receipt_long, size: 80, color: AppTheme.primaryGreen.withOpacity(0.5)),
+          Icon(
+            Icons.receipt_long,
+            size: 80,
+            color: AppTheme.primaryGreen.withOpacity(0.5),
+          ),
           const SizedBox(height: 20),
           const Text(
             'Numérisez vos reçus',
@@ -189,15 +203,17 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
           width: double.infinity,
           decoration: BoxDecoration(
             color: Colors.black,
-            border: Border(bottom: BorderSide(color: AppTheme.primaryGreen, width: 2)),
+            border: Border(
+              bottom: BorderSide(color: AppTheme.primaryGreen, width: 2),
+            ),
           ),
           child: Stack(
             children: [
               Center(
                 child: kIsWeb
-                    ? (_webImageBytes != null 
-                        ? Image.memory(_webImageBytes!, fit: BoxFit.contain)
-                        : const SizedBox())
+                    ? (_webImageBytes != null
+                          ? Image.memory(_webImageBytes!, fit: BoxFit.contain)
+                          : const SizedBox())
                     : Image.file(File(_imageFile!.path), fit: BoxFit.contain),
               ),
               if (_isLoading)
@@ -208,7 +224,7 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
             ],
           ),
         ),
-        
+
         // Bottom: Validation Form
         Expanded(
           child: SingleChildScrollView(
@@ -218,12 +234,20 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
               children: [
                 const Text(
                   'VÉRIFICATION DES DONNÉES',
-                  style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 1.2),
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1.2,
+                  ),
                 ),
                 const SizedBox(height: 20),
                 _buildField('Fournisseur', _supplierController, Icons.store),
                 const SizedBox(height: 15),
-                _buildField('Montant Total (FCFA)', _amountController, Icons.payments, keyboardType: TextInputType.number),
+                _buildField(
+                  'Montant Total (FCFA)',
+                  _amountController,
+                  Icons.payments,
+                  keyboardType: TextInputType.number,
+                ),
                 const SizedBox(height: 15),
                 _buildCategoryDropdown(),
                 const SizedBox(height: 30),
@@ -234,16 +258,24 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
                     onPressed: _isLoading ? null : _saveExpense,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppTheme.primaryGreen,
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ),
-                    child: const Text('VALIDER ET PAYER', style: TextStyle(fontSize: 16, color: Colors.white)),
+                    child: const Text(
+                      'VALIDER ET PAYER',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
                 Center(
                   child: TextButton(
                     onPressed: () => setState(() => _imageFile = null),
-                    child: const Text('Annuler', style: TextStyle(color: Colors.red)),
+                    child: const Text(
+                      'Annuler',
+                      style: TextStyle(color: Colors.red),
+                    ),
                   ),
                 ),
               ],
@@ -254,7 +286,12 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
     );
   }
 
-  Widget _buildField(String label, TextEditingController controller, IconData icon, {TextInputType keyboardType = TextInputType.text}) {
+  Widget _buildField(
+    String label,
+    TextEditingController controller,
+    IconData icon, {
+    TextInputType keyboardType = TextInputType.text,
+  }) {
     return TextField(
       controller: controller,
       keyboardType: keyboardType,
@@ -278,9 +315,14 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
         filled: true,
         fillColor: Colors.white,
       ),
-      items: ['CARBURANT', 'GLACE', 'APPATS', 'VIVRES', 'ENTRETIEN', 'AUTRE']
-          .map((cat) => DropdownMenuItem(value: cat, child: Text(cat)))
-          .toList(),
+      items: [
+        'CARBURANT',
+        'GLACE',
+        'APPATS',
+        'VIVRES',
+        'ENTRETIEN',
+        'AUTRE',
+      ].map((cat) => DropdownMenuItem(value: cat, child: Text(cat))).toList(),
       onChanged: (val) => setState(() => _selectedCategory = val!),
     );
   }
@@ -296,7 +338,8 @@ class _ExpenseCaptureScreenState extends State<ExpenseCaptureScreen> {
       return;
     }
 
-    if (_supplierController.text.isEmpty || _supplierController.text == 'NULL') {
+    if (_supplierController.text.isEmpty ||
+        _supplierController.text == 'NULL') {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Veuillez saisir le nom du fournisseur manuellement'),

@@ -19,7 +19,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool _isLoading = true;
   bool _hasError = false;
   bool _showErrorBanner = false;
-  
+
   WeatherModel? _currentWeatherModel;
   final WeatherService _weatherService = WeatherService();
 
@@ -46,16 +46,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       // 1. Récupérer le profil de l'utilisateur pour connaître sa zone de pêche
       _userProfile = await _profileService.getCurrentUserProfile();
-      
+
       // 2. Déterminer le site ID (par défaut 'yoff' si non défini)
-      final String siteId = (_userProfile?.fishingZone != null && _userProfile!.fishingZone.isNotEmpty)
+      final String siteId =
+          (_userProfile?.fishingZone != null &&
+              _userProfile!.fishingZone.isNotEmpty)
           ? _userProfile!.fishingZone
           : 'yoff';
 
       // 3. Charger la météo pour cette zone spécifique
-      final weatherData = await _weatherService.getCurrentWeather(siteId: siteId);
-      final zonesData = await _predictionService.getFishingZonesToday();
-      
+      // ⚡ Bolt: Parallelize independent async requests using Dart 3 records to improve load time
+      final (weatherData, zonesData) = await (
+        _weatherService.getCurrentWeather(siteId: siteId),
+        _predictionService.getFishingZonesToday(),
+      ).wait;
+
       if (mounted) {
         setState(() {
           _currentWeatherModel = weatherData;
@@ -65,7 +70,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
         });
       }
     } catch (e) {
-
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -80,11 +84,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppTheme.background,
-      body: _isLoading 
-          ? const Center(child: CircularProgressIndicator(color: AppTheme.primaryGreen))
-          : _hasError 
-              ? _buildErrorState() 
-              : _buildNormalState(),
+      body: _isLoading
+          ? const Center(
+              child: CircularProgressIndicator(color: AppTheme.primaryGreen),
+            )
+          : _hasError
+          ? _buildErrorState()
+          : _buildNormalState(),
     );
   }
 
@@ -119,10 +125,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         child: IntrinsicHeight(
           child: Row(
             children: [
-              Container(
-                width: 4,
-                color: AppTheme.error,
-              ),
+              Container(width: 4, color: AppTheme.error),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -160,7 +163,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             _showErrorBanner = false;
                           });
                         },
-                        child: const Icon(Icons.close, color: AppTheme.textHint, size: 20),
+                        child: const Icon(
+                          Icons.close,
+                          color: AppTheme.textHint,
+                          size: 20,
+                        ),
                       ),
                     ],
                   ),
@@ -194,11 +201,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: AppTheme.error.withValues(alpha: 0.15),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.cloud_off,
-              color: AppTheme.error,
-              size: 48,
-            ),
+            child: const Icon(Icons.cloud_off, color: AppTheme.error, size: 48),
           ),
           const SizedBox(height: 32),
           const Text(
@@ -230,7 +233,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               icon: const Icon(Icons.refresh, color: Colors.white),
               label: const Text(
                 "Réessayer",
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppTheme.primaryGreen,
@@ -299,23 +306,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
             const SizedBox(height: 4),
             const Text(
               "Prêt pour la marée d'aujourd'hui ?",
-              style: TextStyle(
-                fontSize: 16,
-                color: AppTheme.textSecondary,
-              ),
+              style: TextStyle(fontSize: 16, color: AppTheme.textSecondary),
             ),
           ],
         );
-      }
+      },
     );
   }
 
   Widget _buildWeatherCard() {
     if (_currentWeatherModel == null) {
       return const SizedBox(
-        height: 200, 
+        height: 200,
         width: double.infinity,
-        child: Center(child: CircularProgressIndicator(color: AppTheme.primaryGreen))
+        child: Center(
+          child: CircularProgressIndicator(color: AppTheme.primaryGreen),
+        ),
       );
     }
 
@@ -385,13 +391,20 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                   ],
                 ),
-                SvgPicture.asset('assets/images/icon_weather_cloud.svg', height: 24, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn)),
+                SvgPicture.asset(
+                  'assets/images/icon_weather_cloud.svg',
+                  height: 24,
+                  colorFilter: const ColorFilter.mode(
+                    Colors.white,
+                    BlendMode.srcIn,
+                  ),
+                ),
               ],
             ),
             const SizedBox(height: 8),
             Text(
-              _userProfile?.fishingZone.isNotEmpty == true 
-                  ? _userProfile!.fishingZone 
+              _userProfile?.fishingZone.isNotEmpty == true
+                  ? _userProfile!.fishingZone
                   : "Yoff, Dakar",
               style: const TextStyle(
                 color: Colors.white,
@@ -417,45 +430,73 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   padding: const EdgeInsets.only(bottom: 8.0),
                   child: Text(
                     _currentWeatherModel!.statusText,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                    ),
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            Container(
-              height: 1,
-              color: Colors.white24,
-            ),
+            Container(height: 1, color: Colors.white24),
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Row(
                   children: [
-                    SvgPicture.asset('assets/images/icon_wind.svg', height: 20, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn)),
+                    SvgPicture.asset(
+                      'assets/images/icon_wind.svg',
+                      height: 20,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Vents", style: TextStyle(color: Colors.white70, fontSize: 12)),
-                        Text("${_currentWeatherModel!.windSpeed} km/h ${_currentWeatherModel!.windDirection}", style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                        const Text(
+                          "Vents",
+                          style: TextStyle(color: Colors.white70, fontSize: 12),
+                        ),
+                        Text(
+                          "${_currentWeatherModel!.windSpeed} km/h ${_currentWeatherModel!.windDirection}",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ],
                 ),
                 Row(
                   children: [
-                    SvgPicture.asset('assets/images/icon_waves.svg', height: 20, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn)),
+                    SvgPicture.asset(
+                      'assets/images/icon_waves.svg',
+                      height: 20,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Column(
-                       crossAxisAlignment: CrossAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Houle", style: TextStyle(color: Colors.white70, fontSize: 12)),
-                        Text("${_currentWeatherModel!.waveHeight}m / ${_currentWeatherModel!.wavePeriod}s", style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.bold)),
+                        const Text(
+                          "Houle",
+                          style: TextStyle(color: Colors.white70, fontSize: 12),
+                        ),
+                        Text(
+                          "${_currentWeatherModel!.waveHeight}m / ${_currentWeatherModel!.wavePeriod}s",
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ],
                     ),
                   ],
@@ -497,7 +538,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   letterSpacing: 1.2,
                 ),
               ),
-              SvgPicture.asset('assets/images/icon_wallet.svg', height: 20, colorFilter: const ColorFilter.mode(AppTheme.primaryGreen, BlendMode.srcIn)),
+              SvgPicture.asset(
+                'assets/images/icon_wallet.svg',
+                height: 20,
+                colorFilter: const ColorFilter.mode(
+                  AppTheme.primaryGreen,
+                  BlendMode.srcIn,
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -512,7 +560,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           const SizedBox(height: 8),
           Row(
             children: [
-              SvgPicture.asset('assets/images/icon_trend_up.svg', height: 16, colorFilter: const ColorFilter.mode(AppTheme.primaryGreen, BlendMode.srcIn)),
+              SvgPicture.asset(
+                'assets/images/icon_trend_up.svg',
+                height: 16,
+                colorFilter: const ColorFilter.mode(
+                  AppTheme.primaryGreen,
+                  BlendMode.srcIn,
+                ),
+              ),
               const SizedBox(width: 4),
               const Text(
                 "+12% vs semaine dernière",
@@ -532,10 +587,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   onPressed: () {},
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryGreen,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text("Distribuer", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                  child: const Text(
+                    "Distribuer",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 12),
@@ -546,7 +610,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 child: IconButton(
                   onPressed: () {},
-                  icon: SvgPicture.asset('assets/images/icon_stats.svg', height: 24),
+                  icon: SvgPicture.asset(
+                    'assets/images/icon_stats.svg',
+                    height: 24,
+                  ),
                 ),
               ),
             ],
@@ -573,7 +640,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
             TextButton(
               onPressed: () {},
-              child: const Text("Voir tout", style: TextStyle(color: AppTheme.primaryGreen)),
+              child: const Text(
+                "Voir tout",
+                style: TextStyle(color: AppTheme.primaryGreen),
+              ),
             ),
           ],
         ),
@@ -641,7 +711,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               color: iconBgColor,
               shape: BoxShape.circle,
             ),
-            child: SvgPicture.asset(iconPath, height: 20, colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn)),
+            child: SvgPicture.asset(
+              iconPath,
+              height: 20,
+              colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+            ),
           ),
           const SizedBox(width: 16),
           Expanded(
@@ -727,7 +801,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 left: 16,
                 child: Row(
                   children: [
-                    SvgPicture.asset('assets/images/icon_location_pin.svg', height: 20, colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn)),
+                    SvgPicture.asset(
+                      'assets/images/icon_location_pin.svg',
+                      height: 20,
+                      colorFilter: const ColorFilter.mode(
+                        Colors.white,
+                        BlendMode.srcIn,
+                      ),
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       "${_fishingZones.length} zones favorables détectées",
@@ -746,4 +827,3 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 }
-

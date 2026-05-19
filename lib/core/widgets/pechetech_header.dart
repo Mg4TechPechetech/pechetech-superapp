@@ -28,9 +28,7 @@ class PecheTechHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       decoration: const BoxDecoration(
         color: Colors.white,
-        border: Border(
-          bottom: BorderSide(color: AppTheme.border, width: 1),
-        ),
+        border: Border(bottom: BorderSide(color: AppTheme.border, width: 1)),
       ),
       child: Row(
         children: [
@@ -77,26 +75,29 @@ class PecheTechHeader extends StatelessWidget {
                   radius: 24,
                   backgroundColor: Colors.white,
                   child: ClipOval(
-                    child: profileImageUrl != null && profileImageUrl!.isNotEmpty
-                        ? (profileImageUrl!.startsWith('data:image') && profileImageUrl!.contains(',')
-                            ? Image.memory(
-                                base64Decode(profileImageUrl!.split(',')[1]),
-                                fit: BoxFit.cover,
-                                width: 48,
-                                height: 48,
-                              )
-                            : Image.network(
-                                profileImageUrl!,
-                                fit: BoxFit.cover,
-                                width: 48,
-                                height: 48,
-                                errorBuilder: (context, error, stackTrace) => Image.asset(
-                                  'assets/images/user_profile.png',
+                    child:
+                        profileImageUrl != null && profileImageUrl!.isNotEmpty
+                        ? (profileImageUrl!.startsWith('data:image') &&
+                                  profileImageUrl!.contains(',')
+                              ? Image.memory(
+                                  base64Decode(profileImageUrl!.split(',')[1]),
                                   fit: BoxFit.cover,
                                   width: 48,
                                   height: 48,
-                                ),
-                              ))
+                                )
+                              : Image.network(
+                                  profileImageUrl!,
+                                  fit: BoxFit.cover,
+                                  width: 48,
+                                  height: 48,
+                                  errorBuilder: (context, error, stackTrace) =>
+                                      Image.asset(
+                                        'assets/images/user_profile.png',
+                                        fit: BoxFit.cover,
+                                        width: 48,
+                                        height: 48,
+                                      ),
+                                ))
                         : Image.asset(
                             'assets/images/user_profile.png',
                             fit: BoxFit.cover,
@@ -132,7 +133,6 @@ class PecheTechHeader extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 20), // Increased gap to match image
-          
           // Notification Icon with Badge
           GestureDetector(
             onTap: onNotificationsTap,
