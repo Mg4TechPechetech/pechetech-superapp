@@ -81,8 +81,10 @@ class MapScreen extends StatelessWidget {
             ),
             child: Center(
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(4),
@@ -114,8 +116,10 @@ class MapScreen extends StatelessWidget {
             ),
             child: Center(
               child: Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 4,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(4),
@@ -171,14 +175,26 @@ class MapScreen extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _buildFilterChip("Zones Autorisées", AppTheme.primaryGreen,
-                  Icons.check_circle, true),
-              const SizedBox(width: 8),
-              _buildFilterChip("Aires Protégées", AppTheme.textSecondary,
-                  Icons.shield, false),
+              _buildFilterChip(
+                "Zones Autorisées",
+                AppTheme.primaryGreen,
+                Icons.check_circle,
+                true,
+              ),
               const SizedBox(width: 8),
               _buildFilterChip(
-                  "Météo", AppTheme.textSecondary, Icons.wb_sunny, false),
+                "Aires Protégées",
+                AppTheme.textSecondary,
+                Icons.shield,
+                false,
+              ),
+              const SizedBox(width: 8),
+              _buildFilterChip(
+                "Météo",
+                AppTheme.textSecondary,
+                Icons.wb_sunny,
+                false,
+              ),
             ],
           ),
         ),
@@ -187,7 +203,11 @@ class MapScreen extends StatelessWidget {
   }
 
   Widget _buildFilterChip(
-      String label, Color color, IconData icon, bool isActive) {
+    String label,
+    Color color,
+    IconData icon,
+    bool isActive,
+  ) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
@@ -245,8 +265,11 @@ class MapScreen extends StatelessWidget {
               const SizedBox(height: 8),
               _buildLegendItem("Zone protégée", Colors.red),
               const SizedBox(height: 8),
-              _buildLegendItem("Limite maritime", Colors.white38,
-                  isDashed: true),
+              _buildLegendItem(
+                "Limite maritime",
+                Colors.white38,
+                isDashed: true,
+              ),
             ],
           ),
         ),

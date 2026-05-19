@@ -45,10 +45,10 @@ class ProfileService {
   // Créer ou mettre à jour un profil
   Future<void> saveUserProfile(UserModel user) async {
     try {
-      await _firestore.collection('users').doc(user.uid).set(
-        user.toMap(),
-        SetOptions(merge: true),
-      );
+      await _firestore
+          .collection('users')
+          .doc(user.uid)
+          .set(user.toMap(), SetOptions(merge: true));
     } catch (e) {
       debugPrint('Erreur lors de la sauvegarde du profil: $e');
       throw Exception('Impossible de sauvegarder le profil');
@@ -80,10 +80,12 @@ class ProfileService {
       // Conversion en Base64
       final base64String = base64Encode(fileBytes);
       final dataUri = 'data:image/jpeg;base64,$base64String';
-      
+
       // Mettre à jour le profil dans Firestore directement
-      await _firestore.collection('users').doc(uid).update({'photoUrl': dataUri});
-      
+      await _firestore.collection('users').doc(uid).update({
+        'photoUrl': dataUri,
+      });
+
       return dataUri;
     } catch (e) {
       debugPrint('Erreur lors de l\'encodage Base64: $e');

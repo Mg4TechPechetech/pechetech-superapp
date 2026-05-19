@@ -15,7 +15,7 @@ class NotificationsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final userId = FirebaseAuth.instance.currentUser?.uid;
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -34,7 +34,8 @@ class NotificationsScreen extends StatelessWidget {
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const FuelPathScreen()),
+                        builder: (context) => const FuelPathScreen(),
+                      ),
                     );
                   },
                 ),
@@ -53,7 +54,8 @@ class NotificationsScreen extends StatelessWidget {
                       ),
                       if (unreadCount > 0)
                         TextButton(
-                          onPressed: () => NotificationService().markAllAsRead(),
+                          onPressed: () =>
+                              NotificationService().markAllAsRead(),
                           child: const Text(
                             "Tout marquer comme lu",
                             style: TextStyle(
@@ -68,64 +70,79 @@ class NotificationsScreen extends StatelessWidget {
                 ),
                 Expanded(
                   child: snapshot.connectionState == ConnectionState.waiting
-                      ? const Center(child: CircularProgressIndicator(color: AppTheme.primaryGreen))
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            color: AppTheme.primaryGreen,
+                          ),
+                        )
                       : notifications.isEmpty
-                          ? _buildEmptyState(userId)
-                          : ListView.builder(
-                              padding: const EdgeInsets.symmetric(horizontal: 16),
-                              itemCount: notifications.length,
-                              itemBuilder: (context, index) {
-                                final notification = notifications[index];
-                                
-                                // Simple logic for section headers
-                                bool showHeader = false;
-                                if (index == 0) {
-                                  showHeader = true;
-                                } else {
-                                  final prev = notifications[index - 1];
-                                  if (!_isSameDay(prev.timestamp, notification.timestamp)) {
-                                    showHeader = true;
-                                  }
-                                }
+                      ? _buildEmptyState(userId)
+                      : ListView.builder(
+                          padding: const EdgeInsets.symmetric(horizontal: 16),
+                          itemCount: notifications.length,
+                          itemBuilder: (context, index) {
+                            final notification = notifications[index];
 
-                                return Dismissible(
-                                  key: Key(notification.id),
-                                  direction: DismissDirection.endToStart,
-                                  background: Container(
-                                    alignment: Alignment.centerRight,
-                                    padding: const EdgeInsets.only(right: 20.0),
-                                    margin: const EdgeInsets.only(bottom: 12),
-                                    decoration: BoxDecoration(
-                                      color: AppTheme.error,
-                                      borderRadius: BorderRadius.circular(16),
-                                    ),
-                                    child: const Icon(Icons.delete_outline, color: Colors.white, size: 28),
-                                  ),
-                                  onDismissed: (direction) {
-                                    NotificationService().deleteNotification(notification.id);
-                                  },
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      if (showHeader) 
-                                        _buildSectionHeader(_formatDateHeader(notification.timestamp)),
-                                      _buildNotificationCard(
-                                        id: notification.id,
-                                        title: notification.title,
-                                        description: notification.description,
-                                        time: _formatTime(notification.timestamp),
-                                        type: notification.type,
-                                        isUnread: !notification.isRead,
-                                      ),
-                                    ],
-                                  ),
+                            // Simple logic for section headers
+                            bool showHeader = false;
+                            if (index == 0) {
+                              showHeader = true;
+                            } else {
+                              final prev = notifications[index - 1];
+                              if (!_isSameDay(
+                                prev.timestamp,
+                                notification.timestamp,
+                              )) {
+                                showHeader = true;
+                              }
+                            }
+
+                            return Dismissible(
+                              key: Key(notification.id),
+                              direction: DismissDirection.endToStart,
+                              background: Container(
+                                alignment: Alignment.centerRight,
+                                padding: const EdgeInsets.only(right: 20.0),
+                                margin: const EdgeInsets.only(bottom: 12),
+                                decoration: BoxDecoration(
+                                  color: AppTheme.error,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
+                                child: const Icon(
+                                  Icons.delete_outline,
+                                  color: Colors.white,
+                                  size: 28,
+                                ),
+                              ),
+                              onDismissed: (direction) {
+                                NotificationService().deleteNotification(
+                                  notification.id,
                                 );
                               },
-                            ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (showHeader)
+                                    _buildSectionHeader(
+                                      _formatDateHeader(notification.timestamp),
+                                    ),
+                                  _buildNotificationCard(
+                                    id: notification.id,
+                                    title: notification.title,
+                                    description: notification.description,
+                                    time: _formatTime(notification.timestamp),
+                                    type: notification.type,
+                                    isUnread: !notification.isRead,
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
                 ),
               ],
             );
-          }
+          },
         ),
       ),
     );
@@ -155,8 +172,11 @@ class NotificationsScreen extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.notifications_none,
-              size: 64, color: AppTheme.textHint.withValues(alpha: 0.3)),
+          Icon(
+            Icons.notifications_none,
+            size: 64,
+            color: AppTheme.textHint.withValues(alpha: 0.3),
+          ),
           const SizedBox(height: 16),
           const Text(
             "Aucune notification",
@@ -293,7 +313,9 @@ class _NotificationCardState extends State<NotificationCard> {
           color: widget.isUnread ? const Color(0xFFF8FAFC) : Colors.white,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: widget.isUnread ? AppTheme.primaryGreen.withValues(alpha: 0.1) : AppTheme.border,
+            color: widget.isUnread
+                ? AppTheme.primaryGreen.withValues(alpha: 0.1)
+                : AppTheme.border,
             width: 1,
           ),
           boxShadow: [
@@ -310,11 +332,7 @@ class _NotificationCardState extends State<NotificationCard> {
           child: IntrinsicHeight(
             child: Row(
               children: [
-                if (hasAlert)
-                  Container(
-                    width: 4,
-                    color: AppTheme.error,
-                  ),
+                if (hasAlert) Container(width: 4, color: AppTheme.error),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.all(16),
@@ -331,7 +349,10 @@ class _NotificationCardState extends State<NotificationCard> {
                             icon,
                             width: 20,
                             height: 20,
-                            colorFilter: ColorFilter.mode(iconColor, BlendMode.srcIn),
+                            colorFilter: ColorFilter.mode(
+                              iconColor,
+                              BlendMode.srcIn,
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -340,7 +361,8 @@ class _NotificationCardState extends State<NotificationCard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Expanded(
                                     child: Text(
@@ -362,7 +384,9 @@ class _NotificationCardState extends State<NotificationCard> {
                                       ),
                                     ),
                                   Icon(
-                                    _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                                    _isExpanded
+                                        ? Icons.keyboard_arrow_up
+                                        : Icons.keyboard_arrow_down,
                                     size: 20,
                                     color: AppTheme.textHint,
                                   ),
@@ -374,7 +398,10 @@ class _NotificationCardState extends State<NotificationCard> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(top: 4, bottom: 8),
+                                      padding: const EdgeInsets.only(
+                                        top: 4,
+                                        bottom: 8,
+                                      ),
                                       child: Text(
                                         widget.description,
                                         style: const TextStyle(
@@ -385,31 +412,47 @@ class _NotificationCardState extends State<NotificationCard> {
                                       ),
                                     ),
                                     Padding(
-                                      padding: const EdgeInsets.only(bottom: 12),
+                                      padding: const EdgeInsets.only(
+                                        bottom: 12,
+                                      ),
                                       child: OutlinedButton(
                                         onPressed: () {
                                           if (widget.isUnread) {
-                                            NotificationService().markAsRead(widget.id);
+                                            NotificationService().markAsRead(
+                                              widget.id,
+                                            );
                                           }
 
                                           switch (widget.type) {
                                             case 'fuel':
                                               Navigator.push(
                                                 context,
-                                                MaterialPageRoute(builder: (context) => const FuelPathScreen()),
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const FuelPathScreen(),
+                                                ),
                                               );
                                               break;
                                             case 'journal':
-                                              HomeNavigationWrapper.selectedTab.value = 0;
+                                              HomeNavigationWrapper
+                                                      .selectedTab
+                                                      .value =
+                                                  0;
                                               Navigator.pop(context);
                                               break;
                                             case 'community':
-                                              HomeNavigationWrapper.selectedTab.value = 3;
+                                              HomeNavigationWrapper
+                                                      .selectedTab
+                                                      .value =
+                                                  3;
                                               Navigator.pop(context);
                                               break;
                                             case 'weather':
                                             case 'market':
-                                              HomeNavigationWrapper.selectedTab.value = 2; // Dashboard
+                                              HomeNavigationWrapper
+                                                      .selectedTab
+                                                      .value =
+                                                  2; // Dashboard
                                               Navigator.pop(context);
                                               break;
                                             default:
@@ -418,16 +461,28 @@ class _NotificationCardState extends State<NotificationCard> {
                                         },
                                         style: OutlinedButton.styleFrom(
                                           foregroundColor: iconColor,
-                                          side: BorderSide(color: iconColor.withValues(alpha: 0.5)),
-                                          shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(8),
+                                          side: BorderSide(
+                                            color: iconColor.withValues(
+                                              alpha: 0.5,
+                                            ),
                                           ),
-                                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                              8,
+                                            ),
+                                          ),
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 0,
+                                          ),
                                           minimumSize: const Size(0, 32),
                                         ),
                                         child: Text(
                                           _getButtonLabel(widget.type),
-                                          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+                                          style: const TextStyle(
+                                            fontSize: 12,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),

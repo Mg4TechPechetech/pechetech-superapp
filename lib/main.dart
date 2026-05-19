@@ -12,13 +12,13 @@ import 'package:intl/date_symbol_data_local.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeDateFormatting('fr_FR', null);
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   if (kDebugMode) {
     // Disable app verification for testing (Phone Auth)
-    await FirebaseAuth.instance.setSettings(appVerificationDisabledForTesting: true);
+    await FirebaseAuth.instance.setSettings(
+      appVerificationDisabledForTesting: true,
+    );
     print('Firebase Auth: App verification disabled for testing.');
   }
 

@@ -101,16 +101,21 @@ class _LoginScreenState extends State<LoginScreen> {
         setState(() => _isLoading = false);
         if (user != null && mounted) {
           FocusScope.of(context).unfocus();
-          CustomToast.show(context,
-              message: 'Connexion réussie !', type: ToastType.success);
+          CustomToast.show(
+            context,
+            message: 'Connexion réussie !',
+            type: ToastType.success,
+          );
         }
       },
       verificationFailed: (FirebaseAuthException e) {
         setState(() => _isLoading = false);
         if (mounted) {
-          CustomToast.show(context,
-              message: 'Vérification échouée : ${e.message}',
-              type: ToastType.error);
+          CustomToast.show(
+            context,
+            message: 'Vérification échouée : ${e.message}',
+            type: ToastType.error,
+          );
         }
       },
       codeSent: (String verificationId, int? resendToken) {
@@ -120,8 +125,11 @@ class _LoginScreenState extends State<LoginScreen> {
           _verificationId = verificationId;
         });
         if (mounted) {
-          CustomToast.show(context,
-              message: 'Code envoyé !', type: ToastType.success);
+          CustomToast.show(
+            context,
+            message: 'Code envoyé !',
+            type: ToastType.success,
+          );
         }
       },
       codeAutoRetrievalTimeout: (String verificationId) {
@@ -133,8 +141,11 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _handleVerifyOTP() async {
     final code = _otpController.text.trim();
     if (code.isEmpty) {
-      CustomToast.show(context,
-          message: 'Veuillez entrer le code reçu.', type: ToastType.warning);
+      CustomToast.show(
+        context,
+        message: 'Veuillez entrer le code reçu.',
+        type: ToastType.warning,
+      );
       return;
     }
 
@@ -151,14 +162,20 @@ class _LoginScreenState extends State<LoginScreen> {
 
       if (user != null && mounted) {
         FocusScope.of(context).unfocus();
-        CustomToast.show(context,
-            message: 'Connexion réussie !', type: ToastType.success);
+        CustomToast.show(
+          context,
+          message: 'Connexion réussie !',
+          type: ToastType.success,
+        );
       }
     } on FirebaseAuthException catch (_) {
       if (mounted) setState(() => _isLoading = false);
       if (mounted) {
-        CustomToast.show(context,
-            message: 'Code invalide.', type: ToastType.error);
+        CustomToast.show(
+          context,
+          message: 'Code invalide.',
+          type: ToastType.error,
+        );
       }
     }
   }
@@ -294,8 +311,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onTap: () =>
                                     setState(() => _isPhoneMode = false),
                                 child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
                                   decoration: BoxDecoration(
                                     border: Border(
                                       bottom: BorderSide(
@@ -325,8 +343,9 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onTap: () =>
                                     setState(() => _isPhoneMode = true),
                                 child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 12),
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 12,
+                                  ),
                                   decoration: BoxDecoration(
                                     border: Border(
                                       bottom: BorderSide(
@@ -370,8 +389,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _emailController,
                             decoration: const InputDecoration(
                               hintText: 'moussa@exemple.com',
-                              prefixIcon: Icon(Icons.email_outlined,
-                                  color: Color(0xFF3C4A42)),
+                              prefixIcon: Icon(
+                                Icons.email_outlined,
+                                color: Color(0xFF3C4A42),
+                              ),
                             ),
                             keyboardType: TextInputType.emailAddress,
                           ),
@@ -407,8 +428,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             obscureText: _obscurePassword,
                             decoration: InputDecoration(
                               hintText: '••••••••',
-                              prefixIcon: const Icon(Icons.lock_outline,
-                                  color: Color(0xFF3C4A42)),
+                              prefixIcon: const Icon(
+                                Icons.lock_outline,
+                                color: Color(0xFF3C4A42),
+                              ),
                               suffixIcon: IconButton(
                                 icon: Icon(
                                   _obscurePassword
@@ -439,8 +462,10 @@ class _LoginScreenState extends State<LoginScreen> {
                             controller: _phoneController,
                             decoration: const InputDecoration(
                               hintText: '+221 77 000 00 00',
-                              prefixIcon: Icon(Icons.phone_outlined,
-                                  color: Color(0xFF3C4A42)),
+                              prefixIcon: Icon(
+                                Icons.phone_outlined,
+                                color: Color(0xFF3C4A42),
+                              ),
                             ),
                             keyboardType: TextInputType.phone,
                           ),
@@ -450,12 +475,17 @@ class _LoginScreenState extends State<LoginScreen> {
                               onPressed: () {
                                 _phoneController.text = '+221700000000';
                               },
-                              icon: const Icon(Icons.bug_report,
-                                  size: 16, color: AppTheme.accentGreen),
+                              icon: const Icon(
+                                Icons.bug_report,
+                                size: 16,
+                                color: AppTheme.accentGreen,
+                              ),
                               label: const Text(
                                 'Utiliser le numéro de test',
                                 style: TextStyle(
-                                    color: AppTheme.accentGreen, fontSize: 12),
+                                  color: AppTheme.accentGreen,
+                                  fontSize: 12,
+                                ),
                               ),
                             ),
                           ],
@@ -475,8 +505,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               controller: _otpController,
                               decoration: const InputDecoration(
                                 hintText: '123456',
-                                prefixIcon: Icon(Icons.sms_outlined,
-                                    color: Color(0xFF3C4A42)),
+                                prefixIcon: Icon(
+                                  Icons.sms_outlined,
+                                  color: Color(0xFF3C4A42),
+                                ),
                               ),
                               keyboardType: TextInputType.number,
                             ),
@@ -486,13 +518,17 @@ class _LoginScreenState extends State<LoginScreen> {
                                 onPressed: () {
                                   _otpController.text = '123456';
                                 },
-                                icon: const Icon(Icons.lock_open,
-                                    size: 16, color: AppTheme.accentGreen),
+                                icon: const Icon(
+                                  Icons.lock_open,
+                                  size: 16,
+                                  color: AppTheme.accentGreen,
+                                ),
                                 label: const Text(
                                   'Utiliser le code de test',
                                   style: TextStyle(
-                                      color: AppTheme.accentGreen,
-                                      fontSize: 12),
+                                    color: AppTheme.accentGreen,
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                             ],
@@ -502,20 +538,21 @@ class _LoginScreenState extends State<LoginScreen> {
                         Row(
                           children: [
                             const Expanded(
-                                child: Divider(color: Color(0x80BBCABF))),
+                              child: Divider(color: Color(0x80BBCABF)),
+                            ),
                             Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 16),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                              ),
                               child: Text(
                                 'OU',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .labelLarge
+                                style: Theme.of(context).textTheme.labelLarge
                                     ?.copyWith(color: const Color(0xFFBBCABF)),
                               ),
                             ),
                             const Expanded(
-                                child: Divider(color: Color(0x80BBCABF))),
+                              child: Divider(color: Color(0x80BBCABF)),
+                            ),
                           ],
                         ),
                         const SizedBox(height: 24),
@@ -523,10 +560,10 @@ class _LoginScreenState extends State<LoginScreen> {
                           onPressed: _isLoading
                               ? null
                               : (_isPhoneMode
-                                  ? (_codeSent
-                                      ? _handleVerifyOTP
-                                      : _handleSendOTP)
-                                  : _handleLogin),
+                                    ? (_codeSent
+                                          ? _handleVerifyOTP
+                                          : _handleSendOTP)
+                                    : _handleLogin),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppTheme.primaryGreen,
                             minimumSize: const Size.fromHeight(56),
@@ -546,12 +583,13 @@ class _LoginScreenState extends State<LoginScreen> {
                               : Text(
                                   _isPhoneMode
                                       ? (_codeSent
-                                          ? 'VÉRIFIER LE CODE'
-                                          : 'ENVOYER LE CODE')
+                                            ? 'VÉRIFIER LE CODE'
+                                            : 'ENVOYER LE CODE')
                                       : 'Se connecter',
                                   style: const TextStyle(
-                                      fontSize: 16,
-                                      fontWeight: FontWeight.bold),
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                         ),
                       ],
@@ -598,16 +636,18 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       const Text(
                         'Pas encore de compte ? ',
-                        style:
-                            TextStyle(color: Color(0xFF3C4A42), fontSize: 16),
+                        style: TextStyle(
+                          color: Color(0xFF3C4A42),
+                          fontSize: 16,
+                        ),
                       ),
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    const RegistrationScreen()),
+                              builder: (context) => const RegistrationScreen(),
+                            ),
                           );
                         },
                         child: const Text(
@@ -643,10 +683,7 @@ class _BlurCircle extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        color: color,
-        shape: BoxShape.circle,
-      ),
+      decoration: BoxDecoration(color: color, shape: BoxShape.circle),
     );
   }
 }

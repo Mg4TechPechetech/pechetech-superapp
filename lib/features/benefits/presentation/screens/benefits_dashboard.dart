@@ -27,9 +27,12 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        final solvabilityData = await _financeService.getSolvabilityScore(user.uid);
-        final expensesData = await _financeService.getUserExpenses(user.uid);
-        
+        // ⚡ Bolt: Parallelize independent async requests using Dart 3 records to improve load time
+        final (solvabilityData, expensesData) = await (
+          _financeService.getSolvabilityScore(user.uid),
+          _financeService.getUserExpenses(user.uid),
+        ).wait;
+
         setState(() {
           _solvabilityData = solvabilityData['data'];
           _expenses = expensesData;
@@ -70,14 +73,23 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
   Widget _buildSolvabilityCard() {
     final score = _solvabilityData?['score'] ?? 0;
     final level = _solvabilityData?['level'] ?? 'INCONNU';
-    
+
     Color levelColor;
     switch (level) {
-      case 'EXCELLENT': levelColor = Colors.green; break;
-      case 'BON': levelColor = Colors.lightGreen; break;
-      case 'MOYEN': levelColor = Colors.orange; break;
-      case 'RISQUE ÉLEVÉ': levelColor = Colors.red; break;
-      default: levelColor = Colors.grey;
+      case 'EXCELLENT':
+        levelColor = Colors.green;
+        break;
+      case 'BON':
+        levelColor = Colors.lightGreen;
+        break;
+      case 'MOYEN':
+        levelColor = Colors.orange;
+        break;
+      case 'RISQUE ÉLEVÉ':
+        levelColor = Colors.red;
+        break;
+      default:
+        levelColor = Colors.grey;
     }
 
     return Container(
@@ -101,7 +113,11 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
         children: [
           const Text(
             'SCORE DE SOLVABILITÉ',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, letterSpacing: 1.1),
+            style: TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+              letterSpacing: 1.1,
+            ),
           ),
           const SizedBox(height: 15),
           Row(
@@ -109,9 +125,16 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
             children: [
               Text(
                 '$score',
-                style: const TextStyle(color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold),
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 48,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
-              const Text('/100', style: TextStyle(color: Colors.white70, fontSize: 18)),
+              const Text(
+                '/100',
+                style: TextStyle(color: Colors.white70, fontSize: 18),
+              ),
             ],
           ),
           const SizedBox(height: 10),
@@ -124,7 +147,10 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
             ),
             child: Text(
               'NIVEAU : $level',
-              style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           const SizedBox(height: 15),
@@ -142,14 +168,25 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('GESTION FINANCIÈRE', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+        const Text(
+          'GESTION FINANCIÈRE',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimary,
+          ),
+        ),
         const SizedBox(height: 15),
         Row(
           children: [
             _buildActionItem(
               'Nouvelle Dépense',
               Icons.add_a_photo,
-              () => Navigator.push(context, MaterialPageRoute(builder: (context) => const ExpenseCaptureScreen())),
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const ExpenseCaptureScreen(),
+                ),
+              ),
             ),
             const SizedBox(width: 15),
             _buildActionItem(
@@ -178,7 +215,13 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
             children: [
               Icon(icon, color: AppTheme.primaryGreen, size: 30),
               const SizedBox(height: 10),
-              Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12)),
+              Text(
+                title,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 12,
+                ),
+              ),
             ],
           ),
         ),
@@ -190,7 +233,13 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text('DÉPENSES RÉCENTES', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+        const Text(
+          'DÉPENSES RÉCENTES',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: AppTheme.textPrimary,
+          ),
+        ),
         const SizedBox(height: 15),
         if (_expenses.isEmpty)
           Container(
@@ -205,12 +254,18 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
               children: [
                 Icon(Icons.receipt_long_outlined, color: Colors.grey, size: 40),
                 SizedBox(height: 10),
-                Text('Aucune dépense récente numérisée.', style: TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(
+                  'Aucune dépense récente numérisée.',
+                  style: TextStyle(color: Colors.grey, fontSize: 12),
+                ),
               ],
             ),
           )
         else
-          ..._expenses.take(5).map((expense) => _buildExpenseItem(expense)).toList(),
+          ..._expenses
+              .take(5)
+              .map((expense) => _buildExpenseItem(expense))
+              .toList(),
       ],
     );
   }
@@ -219,9 +274,13 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
     final status = expense['status'] ?? 'EN_ATTENTE';
     final amount = expense['totalAmount'] ?? 0;
     final supplier = expense['supplierName'] ?? 'Inconnu';
-    final date = expense['createdAt'] != null ? DateTime.parse(expense['createdAt']) : DateTime.now();
+    final date = expense['createdAt'] != null
+        ? DateTime.parse(expense['createdAt'])
+        : DateTime.now();
 
-    Color statusColor = status.toString().startsWith('PAYE') ? Colors.green : Colors.orange;
+    Color statusColor = status.toString().startsWith('PAYE')
+        ? Colors.green
+        : Colors.orange;
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -230,7 +289,11 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
         color: Colors.white,
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.02), blurRadius: 10, offset: const Offset(0, 4)),
+          BoxShadow(
+            color: Colors.black.withOpacity(0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
         ],
       ),
       child: Row(
@@ -241,22 +304,40 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
               color: AppTheme.primaryGreen.withOpacity(0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: Icon(Icons.shopping_bag_outlined, color: AppTheme.primaryGreen),
+            child: Icon(
+              Icons.shopping_bag_outlined,
+              color: AppTheme.primaryGreen,
+            ),
           ),
           const SizedBox(width: 15),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(supplier, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
-                Text('${date.day}/${date.month}/${date.year}', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+                Text(
+                  supplier,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 14,
+                  ),
+                ),
+                Text(
+                  '${date.day}/${date.month}/${date.year}',
+                  style: const TextStyle(color: Colors.grey, fontSize: 12),
+                ),
               ],
             ),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text('$amount FCFA', style: const TextStyle(fontWeight: FontWeight.bold, color: AppTheme.textPrimary)),
+              Text(
+                '$amount FCFA',
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: AppTheme.textPrimary,
+                ),
+              ),
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                 decoration: BoxDecoration(
@@ -265,7 +346,11 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
                 ),
                 child: Text(
                   status.toString().replaceAll('_', ' '),
-                  style: TextStyle(color: statusColor, fontSize: 10, fontWeight: FontWeight.bold),
+                  style: TextStyle(
+                    color: statusColor,
+                    fontSize: 10,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ],

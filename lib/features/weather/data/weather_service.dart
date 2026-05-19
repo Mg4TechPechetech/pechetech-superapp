@@ -14,7 +14,9 @@ class WeatherService {
 
   Future<WeatherModel> getCurrentWeather({String siteId = 'yoff'}) async {
     try {
-      final response = await httpClient.get(Uri.parse('$baseUrl/current?site_id=$siteId'));
+      final response = await httpClient.get(
+        Uri.parse('$baseUrl/current?site_id=$siteId'),
+      );
       if (response.statusCode == 200) {
         return WeatherModel.fromJson(json.decode(response.body));
       } else {

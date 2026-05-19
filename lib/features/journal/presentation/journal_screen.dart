@@ -22,7 +22,7 @@ class JournalScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            
+
             // Search Bar
             _buildSearchBar(),
             const SizedBox(height: 24),
@@ -47,7 +47,7 @@ class JournalScreen extends StatelessWidget {
 
             // AI Advice Card
             _buildAIAdviceCard(),
-            
+
             const SizedBox(height: 100), // Space for bottom nav and fab
           ],
         ),
@@ -113,7 +113,11 @@ class JournalScreen extends StatelessWidget {
               ),
               Row(
                 children: [
-                  Icon(Icons.trending_up, color: AppTheme.primaryGreen, size: 16),
+                  Icon(
+                    Icons.trending_up,
+                    color: AppTheme.primaryGreen,
+                    size: 16,
+                  ),
                   SizedBox(width: 4),
                   Text(
                     "+12%",
@@ -199,10 +203,7 @@ class JournalScreen extends StatelessWidget {
               const SizedBox(width: 4),
               Text(
                 unit,
-                style: const TextStyle(
-                  fontSize: 12,
-                  color: Color(0xFF64748B),
-                ),
+                style: const TextStyle(fontSize: 12, color: Color(0xFF64748B)),
               ),
             ],
           ),
@@ -252,9 +253,29 @@ class JournalScreen extends StatelessWidget {
           // Table Headers
           const Row(
             children: [
-              Expanded(flex: 3, child: Text("Espèce", style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12))),
-              Expanded(flex: 3, child: Text("Prix (kg)", textAlign: TextAlign.right, style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12))),
-              Expanded(flex: 2, child: Text("Var.", textAlign: TextAlign.right, style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12))),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  "Espèce",
+                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                ),
+              ),
+              Expanded(
+                flex: 3,
+                child: Text(
+                  "Prix (kg)",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Text(
+                  "Var.",
+                  textAlign: TextAlign.right,
+                  style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
@@ -262,10 +283,25 @@ class JournalScreen extends StatelessWidget {
           const SizedBox(height: 12),
           // Items
           _buildLivePriceItem("Lotte", "3, 200 CFA", "-2%", Colors.red),
-          _buildLivePriceItem("Capitaine", "5, 800 CFA", "+5%", AppTheme.primaryGreen),
-          _buildLivePriceItem("Dorade", "2, 900 CFA", "0%", const Color(0xFF94A3B8)),
-          _buildLivePriceItem("Sardinelle", "800 CFA", "+15%", AppTheme.primaryGreen),
-          
+          _buildLivePriceItem(
+            "Capitaine",
+            "5, 800 CFA",
+            "+5%",
+            AppTheme.primaryGreen,
+          ),
+          _buildLivePriceItem(
+            "Dorade",
+            "2, 900 CFA",
+            "0%",
+            const Color(0xFF94A3B8),
+          ),
+          _buildLivePriceItem(
+            "Sardinelle",
+            "800 CFA",
+            "+15%",
+            AppTheme.primaryGreen,
+          ),
+
           const SizedBox(height: 16),
           TextButton(
             onPressed: () {},
@@ -282,7 +318,12 @@ class JournalScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildLivePriceItem(String name, String price, String variance, Color varColor) {
+  Widget _buildLivePriceItem(
+    String name,
+    String price,
+    String variance,
+    Color varColor,
+  ) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12.0),
       child: Row(
@@ -294,14 +335,22 @@ class JournalScreen extends StatelessWidget {
               color: AppTheme.primaryGreen.withValues(alpha: 0.1),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.set_meal, color: AppTheme.primaryGreen, size: 20),
+            child: const Icon(
+              Icons.set_meal,
+              color: AppTheme.primaryGreen,
+              size: 20,
+            ),
           ),
           const SizedBox(width: 12),
           Expanded(
             flex: 3,
             child: Text(
               name,
-              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 15, color: AppTheme.textPrimary),
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+                color: AppTheme.textPrimary,
+              ),
             ),
           ),
           Expanded(
@@ -309,7 +358,11 @@ class JournalScreen extends StatelessWidget {
             child: Text(
               price,
               textAlign: TextAlign.right,
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15, color: AppTheme.textPrimary),
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: 15,
+                color: AppTheme.textPrimary,
+              ),
             ),
           ),
           Expanded(
@@ -317,7 +370,11 @@ class JournalScreen extends StatelessWidget {
             child: Text(
               variance,
               textAlign: TextAlign.right,
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 14, color: varColor),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+                color: varColor,
+              ),
             ),
           ),
         ],
@@ -389,12 +446,16 @@ class _TrendPainter extends CustomPainter {
     final path = Path();
     path.moveTo(0, size.height * 0.8);
     path.quadraticBezierTo(
-      size.width * 0.25, size.height * 0.7,
-      size.width * 0.5, size.height * 0.5,
+      size.width * 0.25,
+      size.height * 0.7,
+      size.width * 0.5,
+      size.height * 0.5,
     );
     path.quadraticBezierTo(
-      size.width * 0.75, size.height * 0.3,
-      size.width, size.height * 0.2,
+      size.width * 0.75,
+      size.height * 0.3,
+      size.width,
+      size.height * 0.2,
     );
 
     canvas.drawPath(path, paint);

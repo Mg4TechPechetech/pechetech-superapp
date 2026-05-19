@@ -23,7 +23,7 @@ class EditProfileScreen extends StatefulWidget {
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
   final _formKey = GlobalKey<FormState>();
-  
+
   // Controllers for form fields
   late TextEditingController _nameController;
   late TextEditingController _phoneController;
@@ -31,8 +31,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   late TextEditingController _boatNameController;
   late TextEditingController _zoneController;
 
-   final ProfileService _profileService = ProfileService();
-   final AuthService _authService = AuthService();
+  final ProfileService _profileService = ProfileService();
+  final AuthService _authService = AuthService();
   UserModel? _currentUser;
   bool _isFetching = true;
   bool _isLoading = false;
@@ -91,7 +91,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       maxHeight: 1024,
       imageQuality: 85,
     );
-    
+
     if (image != null && _currentUser != null) {
       if (!mounted) return;
       // Cropping step
@@ -113,10 +113,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           WebUiSettings(
             context: context,
             presentStyle: WebPresentStyle.page,
-            size: const CropperSize(
-              width: 520,
-              height: 520,
-            ),
+            size: const CropperSize(width: 520, height: 520),
           ),
         ],
       );
@@ -125,19 +122,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         if (mounted) setState(() => _isLoading = true);
         try {
           final bytes = await croppedFile.readAsBytes();
-          final url = await _profileService.uploadProfileImage(_currentUser!.uid, bytes);
-          
+          final url = await _profileService.uploadProfileImage(
+            _currentUser!.uid,
+            bytes,
+          );
+
           if (mounted) {
             setState(() {
               _currentUser = _currentUser!.copyWith(photoUrl: url);
               _isLoading = false;
             });
-            CustomToast.show(context, message: "Image mise à jour !", type: ToastType.success);
+            CustomToast.show(
+              context,
+              message: "Image mise à jour !",
+              type: ToastType.success,
+            );
           }
         } catch (e) {
           if (mounted) {
             setState(() => _isLoading = false);
-            CustomToast.show(context, message: "Erreur lors de l'upload.", type: ToastType.error);
+            CustomToast.show(
+              context,
+              message: "Erreur lors de l'upload.",
+              type: ToastType.error,
+            );
           }
         }
       }
@@ -161,21 +169,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       try {
         final uid = FirebaseAuth.instance.currentUser?.uid;
         if (uid != null) {
-          final updatedUser = _currentUser?.copyWith(
-            fullName: _nameController.text.trim(),
-            phoneNumber: _phoneController.text.trim(),
-            email: _emailController.text.trim(),
-            boatName: _boatNameController.text.trim(),
-            fishingZone: _zoneController.text.trim(),
-          ) ?? UserModel(
-            uid: uid,
-            fullName: _nameController.text.trim(),
-            email: _emailController.text.trim(),
-            phoneNumber: _phoneController.text.trim(),
-            role: 'Pêcheur',
-            boatName: _boatNameController.text.trim(),
-            fishingZone: _zoneController.text.trim(),
-          );
+          final updatedUser =
+              _currentUser?.copyWith(
+                fullName: _nameController.text.trim(),
+                phoneNumber: _phoneController.text.trim(),
+                email: _emailController.text.trim(),
+                boatName: _boatNameController.text.trim(),
+                fishingZone: _zoneController.text.trim(),
+              ) ??
+              UserModel(
+                uid: uid,
+                fullName: _nameController.text.trim(),
+                email: _emailController.text.trim(),
+                phoneNumber: _phoneController.text.trim(),
+                role: 'Pêcheur',
+                boatName: _boatNameController.text.trim(),
+                fishingZone: _zoneController.text.trim(),
+              );
 
           await _profileService.saveUserProfile(updatedUser);
 
@@ -207,8 +217,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   bool _isPasswordValid(String password) {
     return password.length >= 8 &&
-           password.contains(RegExp(r'[A-Z]')) &&
-           password.contains(RegExp(r'[0-9]'));
+        password.contains(RegExp(r'[A-Z]')) &&
+        password.contains(RegExp(r'[0-9]'));
   }
 
   void _showPasswordChangeSheet() {
@@ -267,7 +277,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 controller: currentPasswordController,
                 label: "Mot de passe actuel",
                 obscureText: obscureCurrent,
-                onToggle: () => setSheetState(() => obscureCurrent = !obscureCurrent),
+                onToggle: () =>
+                    setSheetState(() => obscureCurrent = !obscureCurrent),
               ),
               const SizedBox(height: 16),
               _buildPopupTextField(
@@ -282,11 +293,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 controller: confirmPasswordController,
                 label: "Confirmer le nouveau mot de passe",
                 obscureText: obscureConfirm,
-                onToggle: () => setSheetState(() => obscureConfirm = !obscureConfirm),
+                onToggle: () =>
+                    setSheetState(() => obscureConfirm = !obscureConfirm),
                 onChanged: (_) => setSheetState(() {}),
-                hasError: confirmPasswordController.text.isNotEmpty && 
-                          (confirmPasswordController.text != newPasswordController.text || 
-                           !_isPasswordValid(newPasswordController.text)),
+                hasError:
+                    confirmPasswordController.text.isNotEmpty &&
+                    (confirmPasswordController.text !=
+                            newPasswordController.text ||
+                        !_isPasswordValid(newPasswordController.text)),
               ),
               const SizedBox(height: 8),
               Text(
@@ -302,53 +316,97 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                 width: double.infinity,
                 height: 56,
                 child: ElevatedButton(
-                  onPressed: isUpdating ? null : () async {
-                    final current = currentPasswordController.text;
-                    final next = newPasswordController.text;
-                    final confirm = confirmPasswordController.text;
+                  onPressed: isUpdating
+                      ? null
+                      : () async {
+                          final current = currentPasswordController.text;
+                          final next = newPasswordController.text;
+                          final confirm = confirmPasswordController.text;
 
-                    if (current.isEmpty || next.isEmpty || confirm.isEmpty) {
-                      CustomToast.show(context, message: "Tous les champs sont requis.", type: ToastType.warning);
-                      return;
-                    }
+                          if (current.isEmpty ||
+                              next.isEmpty ||
+                              confirm.isEmpty) {
+                            CustomToast.show(
+                              context,
+                              message: "Tous les champs sont requis.",
+                              type: ToastType.warning,
+                            );
+                            return;
+                          }
 
-                    if (next != confirm) {
-                      CustomToast.show(context, message: "Les mots de passe ne correspondent pas.", type: ToastType.warning);
-                      return;
-                    }
+                          if (next != confirm) {
+                            CustomToast.show(
+                              context,
+                              message:
+                                  "Les mots de passe ne correspondent pas.",
+                              type: ToastType.warning,
+                            );
+                            return;
+                          }
 
-                    // Constraints check
-                    if (next.length < 8 || !next.contains(RegExp(r'[A-Z]')) || !next.contains(RegExp(r'[0-9]'))) {
-                      CustomToast.show(context, message: "Le nouveau mot de passe ne respecte pas les contraintes.", type: ToastType.warning);
-                      return;
-                    }
+                          // Constraints check
+                          if (next.length < 8 ||
+                              !next.contains(RegExp(r'[A-Z]')) ||
+                              !next.contains(RegExp(r'[0-9]'))) {
+                            CustomToast.show(
+                              context,
+                              message:
+                                  "Le nouveau mot de passe ne respecte pas les contraintes.",
+                              type: ToastType.warning,
+                            );
+                            return;
+                          }
 
-                    setSheetState(() => isUpdating = true);
-                    try {
-                      await _authService.changePassword(current, next);
-                      if (mounted) {
-                        Navigator.pop(context);
-                        CustomToast.show(context, message: "Mot de passe modifié !", type: ToastType.success);
-                      }
-                    } catch (e) {
-                      if (mounted) {
-                        String error = "Erreur de validation.";
-                        if (e is FirebaseAuthException && e.code == 'wrong-password') {
-                          error = "Mot de passe actuel incorrect.";
-                        }
-                        CustomToast.show(context, message: error, type: ToastType.error);
-                      }
-                    } finally {
-                      setSheetState(() => isUpdating = false);
-                    }
-                  },
+                          setSheetState(() => isUpdating = true);
+                          try {
+                            await _authService.changePassword(current, next);
+                            if (mounted) {
+                              Navigator.pop(context);
+                              CustomToast.show(
+                                context,
+                                message: "Mot de passe modifié !",
+                                type: ToastType.success,
+                              );
+                            }
+                          } catch (e) {
+                            if (mounted) {
+                              String error = "Erreur de validation.";
+                              if (e is FirebaseAuthException &&
+                                  e.code == 'wrong-password') {
+                                error = "Mot de passe actuel incorrect.";
+                              }
+                              CustomToast.show(
+                                context,
+                                message: error,
+                                type: ToastType.error,
+                              );
+                            }
+                          } finally {
+                            setSheetState(() => isUpdating = false);
+                          }
+                        },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryGreen,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
                   ),
                   child: isUpdating
-                    ? const SizedBox(height: 24, width: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : const Text("Mettre à jour", style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                      ? const SizedBox(
+                          height: 24,
+                          width: 24,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
+                      : const Text(
+                          "Mettre à jour",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                 ),
               ),
               const SizedBox(height: 24),
@@ -371,12 +429,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          label, 
+          label,
           style: TextStyle(
-            fontSize: 12, 
-            fontWeight: FontWeight.bold, 
-            color: hasError ? Colors.red : AppTheme.textSecondary
-          )
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            color: hasError ? Colors.red : AppTheme.textSecondary,
+          ),
         ),
         const SizedBox(height: 8),
         TextField(
@@ -386,22 +444,31 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           cursorColor: hasError ? Colors.red : AppTheme.primaryGreen,
           decoration: InputDecoration(
             filled: true,
-            fillColor: hasError 
-                ? Colors.red.withValues(alpha: 0.05) 
+            fillColor: hasError
+                ? Colors.red.withValues(alpha: 0.05)
                 : AppTheme.border.withValues(alpha: 0.1),
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12), 
-              borderSide: hasError ? const BorderSide(color: Colors.red, width: 1.5) : BorderSide.none
+              borderRadius: BorderRadius.circular(12),
+              borderSide: hasError
+                  ? const BorderSide(color: Colors.red, width: 1.5)
+                  : BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12), 
-              borderSide: hasError ? const BorderSide(color: Colors.red, width: 1.5) : BorderSide.none
+              borderRadius: BorderRadius.circular(12),
+              borderSide: hasError
+                  ? const BorderSide(color: Colors.red, width: 1.5)
+                  : BorderSide.none,
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(12), 
-              borderSide: hasError ? const BorderSide(color: Colors.red, width: 2) : const BorderSide(color: AppTheme.primaryGreen, width: 1.5)
+              borderRadius: BorderRadius.circular(12),
+              borderSide: hasError
+                  ? const BorderSide(color: Colors.red, width: 2)
+                  : const BorderSide(color: AppTheme.primaryGreen, width: 1.5),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 12,
+            ),
             suffixIcon: onToggle != null
                 ? IconButton(
                     icon: Icon(
@@ -436,7 +503,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         child: Column(
           children: [
             StreamBuilder<int>(
-              stream: NotificationService().getUnreadCount(FirebaseAuth.instance.currentUser?.uid),
+              stream: NotificationService().getUnreadCount(
+                FirebaseAuth.instance.currentUser?.uid,
+              ),
               builder: (context, snapshot) {
                 return PecheTechHeader(
                   showBackButton: true,
@@ -444,11 +513,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                   onNotificationsTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen(),
+                      ),
                     );
                   },
                 );
-              }
+              },
             ),
             Expanded(
               child: SingleChildScrollView(
@@ -476,7 +547,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      
+
                       // Profile Picture Edit
                       Center(
                         child: Stack(
@@ -486,7 +557,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               height: 100,
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                border: Border.all(color: AppTheme.border, width: 3),
+                                border: Border.all(
+                                  color: AppTheme.border,
+                                  width: 3,
+                                ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withValues(alpha: 0.1),
@@ -496,26 +570,39 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                 ],
                               ),
                               child: ClipOval(
-                                child: _currentUser?.photoUrl != null && _currentUser!.photoUrl.isNotEmpty
-                                  ? (_currentUser!.photoUrl.startsWith('data:image')
-                                      ? Image.memory(
-                                          base64Decode(_currentUser!.photoUrl.split(',')[1]),
-                                          fit: BoxFit.cover,
-                                        )
-                                      : Image.network(
-                                          _currentUser!.photoUrl,
-                                          fit: BoxFit.cover,
-                                          errorBuilder: (context, error, stackTrace) => Image.asset(
-                                            'assets/images/user_profile.png',
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ))
-                                  : Image.asset(
-                                      'assets/images/user_profile.png',
-                                      fit: BoxFit.cover,
-                                      width: 100,
-                                      height: 100,
-                                    ),
+                                child:
+                                    _currentUser?.photoUrl != null &&
+                                        _currentUser!.photoUrl.isNotEmpty
+                                    ? (_currentUser!.photoUrl.startsWith(
+                                            'data:image',
+                                          )
+                                          ? Image.memory(
+                                              base64Decode(
+                                                _currentUser!.photoUrl.split(
+                                                  ',',
+                                                )[1],
+                                              ),
+                                              fit: BoxFit.cover,
+                                            )
+                                          : Image.network(
+                                              _currentUser!.photoUrl,
+                                              fit: BoxFit.cover,
+                                              errorBuilder:
+                                                  (
+                                                    context,
+                                                    error,
+                                                    stackTrace,
+                                                  ) => Image.asset(
+                                                    'assets/images/user_profile.png',
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                            ))
+                                    : Image.asset(
+                                        'assets/images/user_profile.png',
+                                        fit: BoxFit.cover,
+                                        width: 100,
+                                        height: 100,
+                                      ),
                               ),
                             ),
                             Positioned(
@@ -528,19 +615,25 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   decoration: BoxDecoration(
                                     color: AppTheme.primaryGreen,
                                     shape: BoxShape.circle,
-                                    border: Border.all(color: Colors.white, width: 2),
+                                    border: Border.all(
+                                      color: Colors.white,
+                                      width: 2,
+                                    ),
                                   ),
-                                  child: _isLoading 
-                                    ? const SizedBox(
-                                        width: 16,
-                                        height: 16,
-                                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-                                      )
-                                    : const Icon(
-                                        Icons.camera_alt,
-                                        color: Colors.white,
-                                        size: 16,
-                                      ),
+                                  child: _isLoading
+                                      ? const SizedBox(
+                                          width: 16,
+                                          height: 16,
+                                          child: CircularProgressIndicator(
+                                            color: Colors.white,
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : const Icon(
+                                          Icons.camera_alt,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
                                 ),
                               ),
                             ),
@@ -548,7 +641,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 32),
-                      
+
                       _buildInputField(
                         controller: _nameController,
                         label: "Nom Complet",
@@ -579,7 +672,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         },
                       ),
                       const SizedBox(height: 20),
-                      
+
                       _buildInputField(
                         controller: _phoneController,
                         label: "Numéro de téléphone",
@@ -594,18 +687,20 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         },
                       ),
                       const SizedBox(height: 20),
-                      
+
                       _buildInputField(
                         controller: _boatNameController,
                         label: "Nom du Navire / Pirogue",
                         icon: Icons.directions_boat_outlined,
                       ),
                       const SizedBox(height: 20),
-                      
+
                       _buildDropdownField(
                         label: "Zone de pêche principale",
                         icon: Icons.location_on_outlined,
-                        value: _fishingZones.contains(_zoneController.text) ? _zoneController.text : null,
+                        value: _fishingZones.contains(_zoneController.text)
+                            ? _zoneController.text
+                            : null,
                         items: _fishingZones,
                         onChanged: (value) {
                           if (value != null) {
@@ -616,11 +711,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         },
                       ),
                       const SizedBox(height: 24),
-                      
+
                       // Change Password Button
                       TextButton.icon(
                         onPressed: _showPasswordChangeSheet,
-                        icon: const Icon(Icons.lock_reset, color: AppTheme.accentGreen),
+                        icon: const Icon(
+                          Icons.lock_reset,
+                          color: AppTheme.accentGreen,
+                        ),
                         label: const Text(
                           "Changer le mot de passe",
                           style: TextStyle(
@@ -630,7 +728,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         ),
                       ),
                       const SizedBox(height: 40),
-                      
+
                       // Save Button
                       SizedBox(
                         width: double.infinity,
@@ -707,22 +805,35 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           ),
           decoration: InputDecoration(
             hintText: "Saisissez votre ${label.toLowerCase()}",
-            hintStyle: TextStyle(color: AppTheme.textSecondary.withValues(alpha: 0.5)),
+            hintStyle: TextStyle(
+              color: AppTheme.textSecondary.withValues(alpha: 0.5),
+            ),
             prefixIcon: Icon(icon, color: AppTheme.primaryGreen, size: 20),
             filled: true,
-            fillColor: readOnly ? AppTheme.border.withValues(alpha: 0.3) : Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            fillColor: readOnly
+                ? AppTheme.border.withValues(alpha: 0.3)
+                : Colors.white,
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
               borderSide: BorderSide.none,
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: BorderSide(color: AppTheme.border.withValues(alpha: 0.5), width: 1),
+              borderSide: BorderSide(
+                color: AppTheme.border.withValues(alpha: 0.5),
+                width: 1,
+              ),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
-              borderSide: const BorderSide(color: AppTheme.primaryGreen, width: 2),
+              borderSide: const BorderSide(
+                color: AppTheme.primaryGreen,
+                width: 2,
+              ),
             ),
             errorBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(16),
@@ -767,7 +878,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             prefixIcon: Icon(icon, color: AppTheme.primaryGreen, size: 20),
             filled: true,
             fillColor: Colors.white,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 16,
+              vertical: 16,
+            ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
               borderSide: const BorderSide(color: AppTheme.border),
@@ -778,7 +892,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(12),
-              borderSide: const BorderSide(color: AppTheme.primaryGreen, width: 2),
+              borderSide: const BorderSide(
+                color: AppTheme.primaryGreen,
+                width: 2,
+              ),
             ),
           ),
           validator: (value) {

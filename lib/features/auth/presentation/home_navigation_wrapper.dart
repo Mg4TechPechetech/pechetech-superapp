@@ -26,7 +26,7 @@ class HomeNavigationWrapper extends StatefulWidget {
 }
 
 class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
-  int _currentIndex = 2; 
+  int _currentIndex = 2;
   bool _isListening = false; // For voice feature
 
   @override
@@ -93,33 +93,34 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const ProfileScreen()),
+                                builder: (context) => const ProfileScreen(),
+                              ),
                             );
                           },
                           onFuelTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const FuelPathScreen()),
+                                builder: (context) => const FuelPathScreen(),
+                              ),
                             );
                           },
                           onNotificationsTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => const NotificationsScreen()),
+                                builder: (context) =>
+                                    const NotificationsScreen(),
+                              ),
                             );
                           },
                         );
-                      }
+                      },
                     );
-                  }
+                  },
                 ),
                 Expanded(
-                  child: IndexedStack(
-                    index: _currentIndex,
-                    children: _pages,
-                  ),
+                  child: IndexedStack(index: _currentIndex, children: _pages),
                 ),
               ],
             ),
@@ -129,9 +130,7 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
               Positioned.fill(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 8, sigmaY: 8),
-                  child: Container(
-                    color: Colors.white.withValues(alpha: 0.3),
-                  ),
+                  child: Container(color: Colors.white.withValues(alpha: 0.3)),
                 ),
               ),
 
@@ -146,12 +145,15 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
                     Container(
                       margin: const EdgeInsets.only(right: 12),
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 16, vertical: 12),
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withValues(alpha: 0.9),
                         borderRadius: BorderRadius.circular(24),
                         border: Border.all(
-                            color: Colors.green.withValues(alpha: 0.3)),
+                          color: Colors.green.withValues(alpha: 0.3),
+                        ),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withValues(alpha: 0.05),
@@ -222,18 +224,34 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Expanded(
-                    child: _buildNavItem(
-                        0, "Journal", "assets/images/icon_nav_journal.svg")),
+                  child: _buildNavItem(
+                    0,
+                    "Journal",
+                    "assets/images/icon_nav_journal.svg",
+                  ),
+                ),
                 Expanded(
-                    child: _buildNavItem(
-                        1, "Carte", "assets/images/icon_nav_map.svg")),
+                  child: _buildNavItem(
+                    1,
+                    "Carte",
+                    "assets/images/icon_nav_map.svg",
+                  ),
+                ),
                 Expanded(child: _buildCenterHomeItem()),
                 Expanded(
-                    child: _buildNavItem(3, "Avantages",
-                        "assets/images/icon_wallet.svg")),
+                  child: _buildNavItem(
+                    3,
+                    "Avantages",
+                    "assets/images/icon_wallet.svg",
+                  ),
+                ),
                 Expanded(
-                    child: _buildNavItem(4, "Communauté",
-                        "assets/images/icon_nav_community.svg")),
+                  child: _buildNavItem(
+                    4,
+                    "Communauté",
+                    "assets/images/icon_nav_community.svg",
+                  ),
+                ),
               ],
             ),
           ),
@@ -246,8 +264,9 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
     final isSelected = _currentIndex == 2;
     final iconColor = isSelected ? Colors.white : AppTheme.textSecondary;
     final circleFillColor = isSelected ? AppTheme.primaryGreen : Colors.white;
-    final textColor =
-        isSelected ? AppTheme.primaryGreen : AppTheme.textSecondary;
+    final textColor = isSelected
+        ? AppTheme.primaryGreen
+        : AppTheme.textSecondary;
     const borderColor = Color(0xFF064E3B); // Dark green border
 
     return GestureDetector(
@@ -264,10 +283,7 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
               decoration: BoxDecoration(
                 color: circleFillColor,
                 shape: BoxShape.circle,
-                border: Border.all(
-                  color: borderColor,
-                  width: 4,
-                ),
+                border: Border.all(color: borderColor, width: 4),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black.withValues(alpha: 0.1),
@@ -314,8 +330,10 @@ class _HomeNavigationWrapperState extends State<HomeNavigationWrapper> {
       onTap: () => _onTabTapped(index),
       behavior: HitTestBehavior.opaque,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 0)
-            .copyWith(bottom: 8),
+        padding: const EdgeInsets.symmetric(
+          horizontal: 2,
+          vertical: 0,
+        ).copyWith(bottom: 8),
         height:
             70, // explicitly set height to 70 for alignment with the background base
         child: Column(

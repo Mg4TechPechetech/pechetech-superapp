@@ -26,15 +26,20 @@ class SettingsScreen extends StatelessWidget {
                   onNotificationsTap: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+                      MaterialPageRoute(
+                        builder: (context) => const NotificationsScreen(),
+                      ),
                     );
                   },
                 );
-              }
+              },
             ),
             Expanded(
               child: SingleChildScrollView(
-                padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 24.0,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -56,7 +61,7 @@ class SettingsScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 32),
-                    
+
                     _buildSectionTitle("PRÉFÉRENCES"),
                     _buildSettingsGroup([
                       _buildSettingsItem(
@@ -72,7 +77,7 @@ class SettingsScreen extends StatelessWidget {
                         isLast: true,
                       ),
                     ]),
-                    
+
                     const SizedBox(height: 24),
                     _buildSectionTitle("SÉCURITÉ"),
                     _buildSettingsGroup([
@@ -88,7 +93,7 @@ class SettingsScreen extends StatelessWidget {
                         isLast: true,
                       ),
                     ]),
-                    
+
                     const SizedBox(height: 24),
                     _buildSectionTitle("À PROPOS"),
                     _buildSettingsGroup([
@@ -155,9 +160,7 @@ class SettingsScreen extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        children: children,
-      ),
+      child: Column(children: children),
     );
   }
 

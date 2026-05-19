@@ -57,13 +57,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       onFuelTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const FuelPathScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const FuelPathScreen(),
+                          ),
                         );
                       },
                       onNotificationsTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const NotificationsScreen()),
+                          MaterialPageRoute(
+                            builder: (context) => const NotificationsScreen(),
+                          ),
                         );
                       },
                     );
@@ -123,32 +127,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   ],
                 ),
                 child: ClipOval(
-                  child: userProfile?.photoUrl != null && userProfile!.photoUrl.isNotEmpty
-                    ? (userProfile.photoUrl.startsWith('data:image') && userProfile.photoUrl.contains(',')
-                        ? Image.memory(
-                            base64Decode(userProfile.photoUrl.split(',')[1]),
-                            fit: BoxFit.cover,
-                            width: 120,
-                            height: 120,
-                          )
-                        : Image.network(
-                            userProfile.photoUrl,
-                            fit: BoxFit.cover,
-                            width: 120,
-                            height: 120,
-                            errorBuilder: (context, error, stackTrace) => Image.asset(
-                              'assets/images/user_profile.png',
-                              fit: BoxFit.cover,
-                              width: 120,
-                              height: 120,
-                            ),
-                          ))
-                    : Image.asset(
-                        'assets/images/user_profile.png',
-                        fit: BoxFit.cover,
-                        width: 120,
-                        height: 120,
-                      ),
+                  child:
+                      userProfile?.photoUrl != null &&
+                          userProfile!.photoUrl.isNotEmpty
+                      ? (userProfile.photoUrl.startsWith('data:image') &&
+                                userProfile.photoUrl.contains(',')
+                            ? Image.memory(
+                                base64Decode(
+                                  userProfile.photoUrl.split(',')[1],
+                                ),
+                                fit: BoxFit.cover,
+                                width: 120,
+                                height: 120,
+                              )
+                            : Image.network(
+                                userProfile.photoUrl,
+                                fit: BoxFit.cover,
+                                width: 120,
+                                height: 120,
+                                errorBuilder: (context, error, stackTrace) =>
+                                    Image.asset(
+                                      'assets/images/user_profile.png',
+                                      fit: BoxFit.cover,
+                                      width: 120,
+                                      height: 120,
+                                    ),
+                              ))
+                      : Image.asset(
+                          'assets/images/user_profile.png',
+                          fit: BoxFit.cover,
+                          width: 120,
+                          height: 120,
+                        ),
                 ),
               ),
               Positioned(
@@ -198,10 +208,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                const Icon(Icons.location_on, color: AppTheme.primaryGreen, size: 16),
+                const Icon(
+                  Icons.location_on,
+                  color: AppTheme.primaryGreen,
+                  size: 16,
+                ),
                 const SizedBox(width: 6),
                 Text(
-                  userProfile?.fishingZone.isNotEmpty == true ? userProfile!.fishingZone.toUpperCase() : "ZONE NON DÉFINIE",
+                  userProfile?.fishingZone.isNotEmpty == true
+                      ? userProfile!.fishingZone.toUpperCase()
+                      : "ZONE NON DÉFINIE",
                   style: const TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
@@ -277,7 +293,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             style: TextStyle(
               fontSize: 9,
               fontWeight: FontWeight.w800,
-              color: isHighlight ? Colors.white.withValues(alpha: 0.8) : AppTheme.textSecondary,
+              color: isHighlight
+                  ? Colors.white.withValues(alpha: 0.8)
+                  : AppTheme.textSecondary,
               letterSpacing: 0.5,
             ),
           ),
@@ -320,11 +338,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
             scrollDirection: Axis.horizontal,
             child: Row(
               children: [
-                _buildBadgeTile("Gardien de la Mer", Icons.shield, const Color(0xFF0D9488)),
+                _buildBadgeTile(
+                  "Gardien de la Mer",
+                  Icons.shield,
+                  const Color(0xFF0D9488),
+                ),
                 const SizedBox(width: 12),
-                _buildBadgeTile("Pêcheur Expert", Icons.stars, const Color(0xFFF59E0B)),
+                _buildBadgeTile(
+                  "Pêcheur Expert",
+                  Icons.stars,
+                  const Color(0xFFF59E0B),
+                ),
                 const SizedBox(width: 12),
-                _buildBadgeTile("Éco-Respon.", Icons.eco, const Color(0xFF10B981)),
+                _buildBadgeTile(
+                  "Éco-Respon.",
+                  Icons.eco,
+                  const Color(0xFF10B981),
+                ),
                 const SizedBox(width: 12),
               ],
             ),
@@ -392,19 +422,39 @@ class _ProfileScreenState extends State<ProfileScreen> {
       margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         children: [
-          _buildMenuItem(Icons.edit, "Modifier le profil", const Color(0xFFF1F5F9), const Color(0xFF64748B), onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const EditProfileScreen()),
-            );
-          }),
-          _buildMenuItem(Icons.menu_book, "Journal d'activité", const Color(0xFFF1F5F9), const Color(0xFF64748B), onTap: () {}),
-          _buildMenuItem(Icons.settings, "Paramètres", const Color(0xFFF1F5F9), const Color(0xFF64748B), onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const SettingsScreen()),
-            );
-          }),
+          _buildMenuItem(
+            Icons.edit,
+            "Modifier le profil",
+            const Color(0xFFF1F5F9),
+            const Color(0xFF64748B),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const EditProfileScreen(),
+                ),
+              );
+            },
+          ),
+          _buildMenuItem(
+            Icons.menu_book,
+            "Journal d'activité",
+            const Color(0xFFF1F5F9),
+            const Color(0xFF64748B),
+            onTap: () {},
+          ),
+          _buildMenuItem(
+            Icons.settings,
+            "Paramètres",
+            const Color(0xFFF1F5F9),
+            const Color(0xFF64748B),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
           _buildMenuItem(
             Icons.logout,
             "Déconnexion",
@@ -423,7 +473,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
       context: screenContext,
       builder: (dialogContext) => CupertinoAlertDialog(
         title: const Text("Déconnexion"),
-        content: const Text("Êtes-vous sûr de vouloir vous déconnecter de PecheTech ?"),
+        content: const Text(
+          "Êtes-vous sûr de vouloir vous déconnecter de PecheTech ?",
+        ),
         actions: <CupertinoDialogAction>[
           CupertinoDialogAction(
             isDefaultAction: true,
@@ -440,7 +492,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               } catch (e) {
                 debugPrint('ProfileScreen: Error closing dialog: $e');
               }
-              
+
               try {
                 await AuthService().signOut();
                 if (screenContext.mounted) {
@@ -499,7 +551,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
-                      color: iconColor == Colors.red ? Colors.red : AppTheme.textPrimary,
+                      color: iconColor == Colors.red
+                          ? Colors.red
+                          : AppTheme.textPrimary,
                     ),
                   ),
                 ),

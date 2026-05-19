@@ -35,8 +35,12 @@ class UserModel {
       'boatName': boatName,
       'fishingZone': fishingZone,
       'photoUrl': photoUrl,
-      'createdAt': createdAt != null ? Timestamp.fromDate(createdAt!) : FieldValue.serverTimestamp(),
-      'updatedAt': updatedAt != null ? Timestamp.fromDate(updatedAt!) : FieldValue.serverTimestamp(),
+      'createdAt': createdAt != null
+          ? Timestamp.fromDate(createdAt!)
+          : FieldValue.serverTimestamp(),
+      'updatedAt': updatedAt != null
+          ? Timestamp.fromDate(updatedAt!)
+          : FieldValue.serverTimestamp(),
     };
   }
 
@@ -50,8 +54,12 @@ class UserModel {
       boatName: map['boatName'] ?? '',
       fishingZone: map['fishingZone'] ?? '',
       photoUrl: map['photoUrl'] ?? '',
-      createdAt: map['createdAt'] != null ? (map['createdAt'] as Timestamp).toDate() : null,
-      updatedAt: map['updatedAt'] != null ? (map['updatedAt'] as Timestamp).toDate() : null,
+      createdAt: map['createdAt'] != null
+          ? (map['createdAt'] as Timestamp).toDate()
+          : null,
+      updatedAt: map['updatedAt'] != null
+          ? (map['updatedAt'] as Timestamp).toDate()
+          : null,
     );
   }
 
