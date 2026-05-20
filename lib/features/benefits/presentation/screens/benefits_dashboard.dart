@@ -27,8 +27,11 @@ class _BenefitsDashboardState extends State<BenefitsDashboard> {
     try {
       final user = FirebaseAuth.instance.currentUser;
       if (user != null) {
-        final solvabilityData = await _financeService.getSolvabilityScore(user.uid);
-        final expensesData = await _financeService.getUserExpenses(user.uid);
+        // Load data in parallel to improve performance
+        final (solvabilityData, expensesData) = await (
+          _financeService.getSolvabilityScore(user.uid),
+          _financeService.getUserExpenses(user.uid),
+        ).wait;
         
         setState(() {
           _solvabilityData = solvabilityData['data'];
