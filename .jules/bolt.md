@@ -1,0 +1,3 @@
+## 2024-05-19 - Parallel Asynchronous Requests in Dart 3+
+**Learning:** In Dart 3+, the `(Future1, Future2).wait` records extension is the optimal pattern for parallelizing independent asynchronous requests (like API calls on dashboard initialization). It is superior to the older `Future.wait([])` approach because it maintains strict type safety for the awaited values, preventing runtime errors that can occur when manually casting from the `List<dynamic>` returned by `Future.wait([])`.
+**Action:** Always look for sequential, independent `await` calls in `initState` or data-loading methods and refactor them using the `(Future1, Future2).wait` extension to improve performance and preserve type safety.
