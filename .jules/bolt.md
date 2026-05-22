@@ -1,0 +1,3 @@
+## 2024-06-25 - Parallelizing network requests using Dart 3 records
+**Learning:** Sequential network requests block UI rendering longer than necessary. In a codebase that utilizes Dart 3+, sequential `await` calls for independent operations can create a significant bottleneck. Using `Future.wait([])` returns a `List<dynamic>` requiring manual type casting which can lead to runtime exceptions.
+**Action:** Always prefer Dart 3 records extension `(Future1, Future2).wait` to parallelize independent asynchronous requests. This drastically cuts down load times to `max(time_A, time_B)` while maintaining strict type safety, avoiding the error-prone casting of `Future.wait`.
