@@ -1,0 +1,3 @@
+## 2024-05-18 - Prevent Unnecessary Rebuilds in Implicit Animations
+**Learning:** Using `AnimatedBuilder` and ignoring the `child` parameter causes the entire widget subtree inside the builder to rebuild on every animation frame (e.g., 60fps). For simple effects like opacity, this is a major performance bottleneck, especially on a loading skeleton.
+**Action:** Use specialized transition widgets like `FadeTransition`, `ScaleTransition`, etc. These are highly optimized to animate specific properties without triggering a rebuild of their child widget tree. If a custom animation is necessary with `AnimatedBuilder`, always pass the static parts of the tree to the `child` parameter and use it inside the builder function.
