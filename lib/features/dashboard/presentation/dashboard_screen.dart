@@ -7,6 +7,7 @@ import '../../map/data/models/fishing_zone_model.dart';
 import '../../map/data/prediction_service.dart';
 import '../../profile/data/services/profile_service.dart';
 import '../../profile/data/models/user_model.dart';
+import '../../benefits/presentation/screens/profit_sharing_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -529,7 +530,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
             children: [
               Expanded(
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const ProfitSharingScreen(),
+                      ),
+                    );
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppTheme.primaryGreen,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

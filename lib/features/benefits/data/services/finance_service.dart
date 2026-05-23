@@ -69,4 +69,33 @@ class FinanceService {
       throw Exception('Failed to load expenses');
     }
   }
+
+  Future<Map<String, dynamic>> calculateDistribution(Map<String, dynamic> requestData) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/distribution/calculate'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(requestData),
+    );
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to calculate distribution: ${response.body}');
+    }
+  }
+
+  Future<Map<String, dynamic>> saveDistribution(Map<String, dynamic> saveData) async {
+    final response = await http.post(
+      Uri.parse('$baseUrl/distribution/save'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(saveData),
+    );
+
+    if (response.statusCode == 201 || response.statusCode == 200) {
+      return json.decode(response.body);
+    } else {
+      throw Exception('Failed to save distribution: ${response.body}');
+    }
+  }
 }
+

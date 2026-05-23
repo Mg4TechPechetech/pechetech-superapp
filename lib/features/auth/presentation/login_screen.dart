@@ -7,6 +7,7 @@ import 'package:firebase_auth_platform_interface/firebase_auth_platform_interfac
     show FirebaseAuthPlatform;
 
 import 'registration_screen.dart';
+import 'forgot_password_screen.dart';
 import '../data/auth_service.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/custom_toast.dart';
@@ -389,7 +390,14 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ),
                               ),
                               TextButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => const ForgotPasswordScreen(),
+                                    ),
+                                  );
+                                },
                                 child: const Text(
                                   'Mot de passe oublié ?',
                                   style: TextStyle(

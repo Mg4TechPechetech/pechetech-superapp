@@ -211,4 +211,15 @@ class AuthService {
       throw Exception('Une erreur est survenue lors de la modification du mot de passe.');
     }
   }
+
+  // Forgot Password / Password Reset
+  Future<void> resetPassword(String email) async {
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+    } on FirebaseAuthException catch (_) {
+      rethrow;
+    } catch (_) {
+      throw Exception('Une erreur est survenue lors de la réinitialisation du mot de passe.');
+    }
+  }
 }
