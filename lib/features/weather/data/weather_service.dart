@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../../../core/constants/api_constants.dart';
 import 'models/weather_model.dart';
 
 class WeatherService {
   final String baseUrl;
   final http.Client httpClient;
 
-  // Assuming Gateway runs on localhost:8080 in dev
   WeatherService({
-    this.baseUrl = 'http://localhost:8080/api/v1/weather',
+    String? baseUrl,
     http.Client? client,
-  }) : httpClient = client ?? http.Client();
+  }) : baseUrl = baseUrl ?? '${ApiConstants.apiBaseUrl}/weather',
+       httpClient = client ?? http.Client();
 
   Future<WeatherModel> getCurrentWeather({String siteId = 'yoff'}) async {
     try {

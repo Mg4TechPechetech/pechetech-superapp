@@ -3,9 +3,10 @@ import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:universal_io/io.dart';
+import '../../../../core/constants/api_constants.dart';
 
 class FinanceService {
-  static const String baseUrl = 'http://localhost:8080/api/v1'; // Use Gateway port
+  static const String baseUrl = ApiConstants.apiBaseUrl;
 
   Future<Map<String, dynamic>> extractReceiptData(dynamic imageInput) async {
     var request = http.MultipartRequest('POST', Uri.parse('$baseUrl/ocr/extract'));

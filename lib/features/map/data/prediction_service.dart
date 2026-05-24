@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import '../../../../core/constants/api_constants.dart';
 import 'models/fishing_zone_model.dart';
 
 class PredictionService {
@@ -7,9 +8,10 @@ class PredictionService {
   final http.Client httpClient;
 
   PredictionService({
-    this.baseUrl = 'http://localhost:8080/api/v1/predictions',
+    String? baseUrl,
     http.Client? client,
-  }) : httpClient = client ?? http.Client();
+  }) : baseUrl = baseUrl ?? '${ApiConstants.apiBaseUrl}/predictions',
+       httpClient = client ?? http.Client();
 
   Future<List<FishingZoneModel>> getFishingZonesToday() async {
     try {
