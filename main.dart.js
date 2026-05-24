@@ -31315,7 +31315,8 @@ Up:function Up(a){this.a=a},
 akz:function akz(){},
 a7C:function a7C(a){this.a=a},
 pY:function pY(){},
-aqL:function aqL(a){this.b=a},
+aqL:function aqL(a,b){this.a=a
+this.b=b},
 aqM:function aqM(){},
 UV:function UV(a){this.a=a},
 hY:function hY(a,b,c,d,e,f,g){var _=this
@@ -31495,7 +31496,8 @@ _.e=e
 _.f=f
 _.r=g
 _.w=h},
-ayt:function ayt(a){this.b=a},
+ayt:function ayt(a,b){this.a=a
+this.b=b},
 PR(){var s=0,r=A.u(t.H),q,p,o,n,m,l,k,j
 var $async$PR=A.p(function(a,b){if(a===1)return A.q(b,r)
 for(;;)switch(s){case 0:if($.a6==null)A.b_F()
@@ -106929,7 +106931,7 @@ s=A.dC(new A.bI(r))
 p=A.b([],t.lW)
 o=A.aQg()
 if(o==null)o=new A.nm(A.b([],t.O))
-return new A.a0W(new A.ayt(m),new A.iI(q,s),p,new A.aqL(o))}}
+return new A.a0W(new A.ayt("http://localhost:8080/api/v1/weather",m),new A.iI(q,s),p,new A.aqL("http://localhost:8080/api/v1/predictions",o))}}
 A.a0W.prototype={
 aq(){this.aN()
 this.oe()},
@@ -107150,7 +107152,7 @@ Ay(){var s=0,r=A.u(t.fS),q,p=2,o=[],n=this,m,l,k,j,i,h
 var $async$Ay=A.p(function(a,b){if(a===1){o.push(b)
 s=p}for(;;)switch(s){case 0:p=4
 s=7
-return A.o(n.b.xJ("GET",A.f6("http://localhost:8080/api/v1/predictions/zones/today",0,null),null),$async$Ay)
+return A.o(n.b.xJ("GET",A.f6(n.a+"/zones/today",0,null),null),$async$Ay)
 case 7:m=b
 if(m.b===200){j=m
 l=B.bS.d2(A.x2(A.wV(j.e)).d2(j.w))
@@ -108228,7 +108230,7 @@ a8D(a){var s=0,r=A.u(t.It),q,p=2,o=[],n=this,m,l,k,j,i,h,g,f,e,d,c,b
 var $async$At=A.p(function(a0,a1){if(a0===1){o.push(a1)
 s=p}for(;;)switch(s){case 0:p=4
 s=7
-return A.o(n.b.xJ("GET",A.f6("http://localhost:8080/api/v1/weather/current?site_id="+a,0,null),null),$async$At)
+return A.o(n.b.xJ("GET",A.f6(n.a+"/current?site_id="+a,0,null),null),$async$At)
 case 7:m=a1
 if(m.b===200){k=m
 k=B.bS.d2(A.x2(A.wV(k.e)).d2(k.w))
