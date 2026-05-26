@@ -1,0 +1,3 @@
+## 2025-02-12 - Parallelize independent API calls using Dart 3 records
+**Learning:** Sequential `await`s on independent network requests in `initState` or `loadData` methods are a common source of slow perceived startup time in Flutter apps. Dart 3 records provide an excellent way to await multiple `Future`s in parallel `(future1, future2).wait` while maintaining strict types, which is superior to `Future.wait([])` where elements are cast to `List<dynamic>`.
+**Action:** Always look for sequential network calls in Flutter initialization methods and convert them to parallel requests using Dart 3 record `.wait` extension when they don't depend on each other.
