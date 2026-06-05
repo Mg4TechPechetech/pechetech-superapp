@@ -1,0 +1,3 @@
+## 2024-05-18 - [Parallelizing independent async requests with Dart 3]
+**Learning:** Sequential `await`s for independent network requests artificially inflate load times. While `Future.wait([])` was the traditional solution, Dart 3 introduces a safer, strongly-typed records extension `(future1, future2).wait`.
+**Action:** When multiple independent futures are awaited consecutively, refactor them using the `(future1, future2).wait` syntax. This is particularly impactful in `initState` or data-loading functions across the app (like `_loadData()` in `DashboardScreen` and `BenefitsDashboard`), reducing total wait time from sum(t) to max(t).
