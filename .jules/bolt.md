@@ -1,0 +1,3 @@
+## 2024-06-11 - [Dart 3 Records for Parallel Async Calls]
+**Learning:** Sequential `await` statements in widget initialization blocks (`_loadData`) block the UI from rendering efficiently. Using `Future.wait([])` loses strict type safety, but Dart 3's `(Future1, Future2).wait` records extension provides concurrent execution with strict type safety, which is critical for combining heterogeneous API responses (e.g. WeatherModel and List<FishingZoneModel>).
+**Action:** Always use the `(Future1, Future2).wait` records extension for parallelizing independent asynchronous requests instead of sequential awaits or `Future.wait([])`.
