@@ -36,27 +36,26 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen>
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
-          child: AnimatedBuilder(
-            animation: _animation,
-            builder: (context, child) {
-              return Opacity(
-                opacity: _animation.value,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildSkeletonHeader(),
-                    const SizedBox(height: 24),
-                    _buildSkeletonTitle(),
-                    const SizedBox(height: 24),
-                    _buildSkeletonWeatherCard(),
-                    const SizedBox(height: 24),
-                    _buildSkeletonMetrics(),
-                    const SizedBox(height: 24),
-                    _buildSkeletonList(),
-                  ],
-                ),
-              );
-            },
+          // ⚡ Bolt Performance Optimization:
+          // Replaced AnimatedBuilder + Opacity with FadeTransition.
+          // This prevents the entire skeleton widget tree from rebuilding on every animation frame,
+          // applying opacity strictly at the compositing layer for better performance.
+          child: FadeTransition(
+            opacity: _animation,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildSkeletonHeader(),
+                const SizedBox(height: 24),
+                _buildSkeletonTitle(),
+                const SizedBox(height: 24),
+                _buildSkeletonWeatherCard(),
+                const SizedBox(height: 24),
+                _buildSkeletonMetrics(),
+                const SizedBox(height: 24),
+                _buildSkeletonList(),
+              ],
+            ),
           ),
         ),
       ),
