@@ -53,9 +53,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ? _userProfile!.fishingZone
           : 'yoff';
 
-      // 3. Charger la météo pour cette zone spécifique
-      final weatherData = await _weatherService.getCurrentWeather(siteId: siteId);
-      final zonesData = await _predictionService.getFishingZonesToday();
+      // 3. Charger la météo pour cette zone spécifique (Concurrent fetch for performance optimization)
+      final (weatherData, zonesData) = await (
+        _weatherService.getCurrentWeather(siteId: siteId),
+        _predictionService.getFishingZonesToday()
+      ).wait;
       
       if (mounted) {
         setState(() {
