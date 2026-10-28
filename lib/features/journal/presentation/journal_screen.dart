@@ -7,7 +7,7 @@ class JournalScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0FDF4), // Light mint background from mockup
+      backgroundColor: AppTheme.background,
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
         child: Column(
@@ -330,7 +330,7 @@ class JournalScreen extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF10B981), Color(0xFF34D399)],
+          colors: [AppTheme.primaryGreen, AppTheme.accentGreen],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

@@ -20,7 +20,7 @@ class MapScreen extends StatelessWidget {
               colorBlendMode: BlendMode.darken,
             ),
           ),
-          
+
           // Satellite Map Texture Simulation
           Positioned.fill(
             child: Container(
@@ -81,7 +81,8 @@ class MapScreen extends StatelessWidget {
             ),
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(4),
@@ -109,11 +110,12 @@ class MapScreen extends StatelessWidget {
             decoration: BoxDecoration(
               color: Colors.red.withValues(alpha: 0.3),
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.red, width: 2),
+              border: Border.all(color: AppTheme.error, width: 2),
             ),
             child: Center(
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: Colors.white.withValues(alpha: 0.9),
                   borderRadius: BorderRadius.circular(4),
@@ -123,7 +125,7 @@ class MapScreen extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 12,
                     fontWeight: FontWeight.bold,
-                    color: Colors.red,
+                    color: AppTheme.error,
                   ),
                 ),
               ),
@@ -153,9 +155,9 @@ class MapScreen extends StatelessWidget {
           ),
           child: const TextField(
             decoration: InputDecoration(
-              icon: Icon(Icons.search, color: Color(0xFF94A3B8)),
+              icon: Icon(Icons.search, color: AppTheme.textHint),
               hintText: "Rechercher une zone ou région...",
-              suffixIcon: Icon(Icons.tune, color: Color(0xFF64748B)),
+              suffixIcon: Icon(Icons.tune, color: AppTheme.textSecondary),
               border: InputBorder.none,
               enabledBorder: InputBorder.none,
               focusedBorder: InputBorder.none,
@@ -169,11 +171,14 @@ class MapScreen extends StatelessWidget {
           scrollDirection: Axis.horizontal,
           child: Row(
             children: [
-              _buildFilterChip("Zones Autorisées", AppTheme.primaryGreen, Icons.check_circle, true),
+              _buildFilterChip("Zones Autorisées", AppTheme.primaryGreen,
+                  Icons.check_circle, true),
               const SizedBox(width: 8),
-              _buildFilterChip("Aires Protégées", const Color(0xFF64748B), Icons.shield, false),
+              _buildFilterChip("Aires Protégées", AppTheme.textSecondary,
+                  Icons.shield, false),
               const SizedBox(width: 8),
-              _buildFilterChip("Météo", const Color(0xFF64748B), Icons.wb_sunny, false),
+              _buildFilterChip(
+                  "Météo", AppTheme.textSecondary, Icons.wb_sunny, false),
             ],
           ),
         ),
@@ -181,7 +186,8 @@ class MapScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildFilterChip(String label, Color color, IconData icon, bool isActive) {
+  Widget _buildFilterChip(
+      String label, Color color, IconData icon, bool isActive) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       decoration: BoxDecoration(
@@ -239,7 +245,8 @@ class MapScreen extends StatelessWidget {
               const SizedBox(height: 8),
               _buildLegendItem("Zone protégée", Colors.red),
               const SizedBox(height: 8),
-              _buildLegendItem("Limite maritime", Colors.white38, isDashed: true),
+              _buildLegendItem("Limite maritime", Colors.white38,
+                  isDashed: true),
             ],
           ),
         ),

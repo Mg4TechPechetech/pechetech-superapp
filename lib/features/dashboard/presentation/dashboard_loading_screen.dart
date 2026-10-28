@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../../core/theme/app_theme.dart';
 
 class DashboardLoadingScreen extends StatefulWidget {
   const DashboardLoadingScreen({super.key});
@@ -7,7 +8,8 @@ class DashboardLoadingScreen extends StatefulWidget {
   State<DashboardLoadingScreen> createState() => _DashboardLoadingScreenState();
 }
 
-class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with SingleTickerProviderStateMixin {
+class _DashboardLoadingScreenState extends State<DashboardLoadingScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _animation;
 
@@ -30,7 +32,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF4FBF7),
+      backgroundColor: AppTheme.background,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
@@ -80,7 +82,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
               width: 100,
               height: 20,
               decoration: BoxDecoration(
-                color: const Color(0xFFE2E8F0),
+                color: AppTheme.border,
                 borderRadius: BorderRadius.circular(4),
               ),
             ),
@@ -106,7 +108,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
           width: 200,
           height: 32,
           decoration: BoxDecoration(
-            color: const Color(0xFFE2E8F0),
+            color: AppTheme.border,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -115,7 +117,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
           width: 150,
           height: 16,
           decoration: BoxDecoration(
-            color: const Color(0xFFE2E8F0),
+            color: AppTheme.border,
             borderRadius: BorderRadius.circular(4),
           ),
         ),
@@ -128,7 +130,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
       width: double.infinity,
       height: 120,
       decoration: BoxDecoration(
-        color: const Color(0xFFE2E8F0),
+        color: AppTheme.border,
         borderRadius: BorderRadius.circular(20),
       ),
     );
@@ -141,7 +143,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
           child: Container(
             height: 100,
             decoration: BoxDecoration(
-              color: const Color(0xFFE2E8F0),
+              color: AppTheme.border,
               borderRadius: BorderRadius.circular(16),
             ),
           ),
@@ -151,7 +153,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
           child: Container(
             height: 100,
             decoration: BoxDecoration(
-              color: const Color(0xFFE2E8F0),
+              color: AppTheme.border,
               borderRadius: BorderRadius.circular(16),
             ),
           ),
@@ -171,7 +173,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
                 width: 48,
                 height: 48,
                 decoration: BoxDecoration(
-                  color: const Color(0xFFE2E8F0),
+                  color: AppTheme.border,
                   borderRadius: BorderRadius.circular(12),
                 ),
               ),
@@ -184,7 +186,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
                       width: double.infinity,
                       height: 16,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE2E8F0),
+                        color: AppTheme.border,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),
@@ -193,7 +195,7 @@ class _DashboardLoadingScreenState extends State<DashboardLoadingScreen> with Si
                       width: 100,
                       height: 12,
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE2E8F0),
+                        color: AppTheme.border,
                         borderRadius: BorderRadius.circular(4),
                       ),
                     ),

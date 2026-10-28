@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'dart:convert';
 import '../theme/app_theme.dart';
 
 class PecheTechHeader extends StatelessWidget {
@@ -14,7 +15,7 @@ class PecheTechHeader extends StatelessWidget {
   const PecheTechHeader({
     super.key,
     this.profileImageUrl,
-    this.notificationCount = 2,
+    this.notificationCount = 0,
     this.onProfileTap,
     this.onFuelTap,
     this.onNotificationsTap,
@@ -28,16 +29,35 @@ class PecheTechHeader extends StatelessWidget {
       decoration: const BoxDecoration(
         color: Colors.white,
         border: Border(
-          bottom: BorderSide(color: Color(0xFFF1F5F9), width: 1),
+          bottom: BorderSide(color: AppTheme.border, width: 1),
         ),
       ),
       child: Row(
         children: [
           // Profile Avatar or Back Button
           if (showBackButton)
-            IconButton(
-              icon: const Icon(Icons.arrow_back, color: AppTheme.textPrimary),
-              onPressed: () => Navigator.of(context).pop(),
+            GestureDetector(
+              onTap: () => Navigator.of(context).pop(),
+              child: Container(
+                width: 48,
+                height: 48,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.15),
+                      blurRadius: 10,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: AppTheme.textPrimary,
+                  size: 24,
+                ),
+              ),
             )
           else
             GestureDetector(
@@ -56,21 +76,45 @@ class PecheTechHeader extends StatelessWidget {
                 child: CircleAvatar(
                   radius: 24,
                   backgroundColor: Colors.white,
-                  backgroundImage: profileImageUrl != null
-                      ? NetworkImage(profileImageUrl!)
-                      : const AssetImage('assets/images/user_profile.png') as ImageProvider,
+                  child: ClipOval(
+                    child: profileImageUrl != null && profileImageUrl!.isNotEmpty
+                        ? (profileImageUrl!.startsWith('data:image') && profileImageUrl!.contains(',')
+                            ? Image.memory(
+                                base64Decode(profileImageUrl!.split(',')[1]),
+                                fit: BoxFit.cover,
+                                width: 48,
+                                height: 48,
+                              )
+                            : Image.network(
+                                profileImageUrl!,
+                                fit: BoxFit.cover,
+                                width: 48,
+                                height: 48,
+                                errorBuilder: (context, error, stackTrace) => Image.asset(
+                                  'assets/images/user_profile.png',
+                                  fit: BoxFit.cover,
+                                  width: 48,
+                                  height: 48,
+                                ),
+                              ))
+                        : Image.asset(
+                            'assets/images/user_profile.png',
+                            fit: BoxFit.cover,
+                            width: 48,
+                            height: 48,
+                          ),
+                  ),
                 ),
               ),
             ),
           const SizedBox(width: 12),
 
           // Logo PecheTech
-          Flexible(
-            child: Image.asset(
-              'assets/images/pechetech_logoSurInterface.png',
-              height: 40,
-              fit: BoxFit.contain,
-            ),
+          Image.asset(
+            'assets/images/pechetech_logoSurInterface.png',
+            height: 40,
+            width: 120, // Added explicit width
+            fit: BoxFit.contain,
           ),
 
           const Spacer(),
@@ -100,7 +144,7 @@ class PecheTechHeader extends StatelessWidget {
                   width: 28,
                   height: 28,
                   colorFilter: const ColorFilter.mode(
-                    Color(0xFF64748B), // Slate 500
+                    AppTheme.textSecondary,
                     BlendMode.srcIn,
                   ),
                 ),
@@ -111,7 +155,7 @@ class PecheTechHeader extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(2),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFC22E2E),
+                        color: AppTheme.error,
                         shape: BoxShape.circle,
                         border: Border.all(color: Colors.white, width: 2),
                         boxShadow: [
