@@ -33,7 +33,9 @@ jobs:
         run: flutter pub get
 
       - name: Build Web Application
-        run: flutter build web --release --base-href "/pechetech-superapp/"
+        run: >
+          flutter build web --release --base-href "/pechetech-superapp/"
+          --dart-define=OCR_SPACE_API_KEY=${{ secrets.OCR_SPACE_API_KEY }}
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4

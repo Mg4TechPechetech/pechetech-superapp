@@ -5,6 +5,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:universal_io/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
+import '../../../../core/constants/api_constants.dart';
 
 class FinanceService {
   final FirebaseFirestore? _firestore;
@@ -72,6 +73,9 @@ class FinanceService {
     // 3. Perform OCR parsing (OCR.space API / NLP Heuristics Fallback)
     try {
       if (imageBytes == null) throw Exception("No image bytes available for OCR");
+      if (ApiConstants.ocrSpaceApiKey.isEmpty) {
+        throw Exception("OCR_SPACE_API_KEY non configurée");
+      }
 
       final base64Str = base64Encode(imageBytes);
       final base64Payload = "data:image/jpeg;base64,$base64Str";
@@ -80,7 +84,7 @@ class FinanceService {
       final response = await http.post(
         url,
         body: {
-          'apikey': 'K88686188488957', // High-limit public free tier key or 'helloworld' fallback
+          'apikey': ApiConstants.ocrSpaceApiKey,
           'base64Image': base64Payload,
           'language': 'fre', // French OCR for Senegal receipts
           'isOverlayRequired': 'false',
