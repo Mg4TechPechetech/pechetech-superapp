@@ -55,8 +55,11 @@ class WeatherService {
       double waveP = 8.0;
 
       try {
-        final weatherResponse = await httpClient.get(Uri.parse(weatherUrl), headers: headers);
-        final marineResponse = await httpClient.get(Uri.parse(marineUrl), headers: headers);
+        // Optimized: Replaced sequential await with concurrent requests
+        final (weatherResponse, marineResponse) = await (
+          httpClient.get(Uri.parse(weatherUrl), headers: headers),
+          httpClient.get(Uri.parse(marineUrl), headers: headers),
+        ).wait;
 
         if (weatherResponse.statusCode == 200) {
           final current = json.decode(weatherResponse.body)['current'] ?? {};
