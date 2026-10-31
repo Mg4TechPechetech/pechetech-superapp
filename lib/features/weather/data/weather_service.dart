@@ -5,9 +5,7 @@ import 'models/weather_model.dart';
 class WeatherService {
   final http.Client httpClient;
 
-  WeatherService({
-    http.Client? client,
-  }) : httpClient = client ?? http.Client();
+  WeatherService({http.Client? client}) : httpClient = client ?? http.Client();
 
   // Mapping of common Senegalese fishing sites to GPS coordinates
   static const Map<String, List<double>> SITES = {
@@ -40,11 +38,13 @@ class WeatherService {
       final double lat = coords[0];
       final double lon = coords[1];
 
-      final weatherUrl = "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=temperature_2m,wind_speed_10m,wind_direction_10m,weather_code";
-      final marineUrl = "https://marine-api.open-meteo.com/v1/marine?latitude=$lat&longitude=$lon&current=wave_height,wave_direction,wave_period";
+      final weatherUrl =
+          "https://api.open-meteo.com/v1/forecast?latitude=$lat&longitude=$lon&current=temperature_2m,wind_speed_10m,wind_direction_10m,weather_code";
+      final marineUrl =
+          "https://marine-api.open-meteo.com/v1/marine?latitude=$lat&longitude=$lon&current=wave_height,wave_direction,wave_period";
 
       final headers = {
-        "User-Agent": "PecheTech-SuperApp/1.0 (contact: admin@pechetech.com)"
+        "User-Agent": "PecheTech-SuperApp/1.0 (contact: admin@pechetech.com)",
       };
 
       double temp = 25.0;
@@ -55,8 +55,12 @@ class WeatherService {
       double waveP = 8.0;
 
       try {
-        final weatherResponse = await httpClient.get(Uri.parse(weatherUrl), headers: headers);
-        final marineResponse = await httpClient.get(Uri.parse(marineUrl), headers: headers);
+        // ⚡ Bolt: Parallelized independent async requests using Dart 3 records
+        // Impact: Reduces load time by executing weather and marine requests concurrently instead of sequentially
+        final (weatherResponse, marineResponse) = await (
+          httpClient.get(Uri.parse(weatherUrl), headers: headers),
+          httpClient.get(Uri.parse(marineUrl), headers: headers),
+        ).wait;
 
         if (weatherResponse.statusCode == 200) {
           final current = json.decode(weatherResponse.body)['current'] ?? {};
@@ -133,4 +137,3 @@ class WeatherService {
     }
   }
 }
-
