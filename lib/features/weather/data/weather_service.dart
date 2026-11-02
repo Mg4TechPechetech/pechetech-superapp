@@ -55,8 +55,12 @@ class WeatherService {
       double waveP = 8.0;
 
       try {
-        final weatherResponse = await httpClient.get(Uri.parse(weatherUrl), headers: headers);
-        final marineResponse = await httpClient.get(Uri.parse(marineUrl), headers: headers);
+        // ⚡ Bolt Optimization: Parallelize independent HTTP requests using Dart 3 records extension
+        // Reduces overall weather data load time by awaiting both network calls concurrently.
+        final (weatherResponse, marineResponse) = await (
+          httpClient.get(Uri.parse(weatherUrl), headers: headers),
+          httpClient.get(Uri.parse(marineUrl), headers: headers),
+        ).wait;
 
         if (weatherResponse.statusCode == 200) {
           final current = json.decode(weatherResponse.body)['current'] ?? {};
