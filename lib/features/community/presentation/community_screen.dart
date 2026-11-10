@@ -13,6 +13,45 @@ class _CommunityScreenState extends State<CommunityScreen> {
   int _selectedFilterIndex = 0;
   final List<String> _filters = ["Tous", "Mareyeurs", "Transformateurs"];
 
+  final List<Map<String, dynamic>> _communityActors = [
+    {
+      "imagePath": "assets/images/user_profile.png",
+      "name": "Mareyeurs du Littoral",
+      "isVerified": true,
+      "category": "Mareyeur Grossiste",
+      "detailIcon": Icons.inventory_2_outlined,
+      "detailText": "Achat en gros & Export",
+      "location": "Mbour, Sénégal",
+    },
+    {
+      "imagePath": "assets/images/user_profile.png",
+      "name": "Femmes du Sel",
+      "isVerified": true,
+      "category": "Transformateurs",
+      "detailIcon": Icons.whatshot_outlined,
+      "detailText": "Fumage traditionnel",
+      "location": "Joal-Fadiouth, Sénégal",
+    },
+    {
+      "imagePath": "assets/images/user_profile.png",
+      "name": "TransFroid Express",
+      "isVerified": true,
+      "category": "Logistique & Transport",
+      "detailIcon": Icons.ac_unit_outlined,
+      "detailText": "Transport frigorifique",
+      "location": "Dakar Port, Sénégal",
+    },
+    {
+      "imagePath": "assets/images/user_profile.png",
+      "name": "Union de Kayar",
+      "isVerified": true,
+      "category": "Coopérative",
+      "detailIcon": Icons.handshake_outlined,
+      "detailText": "Mutualisation de moyens",
+      "location": "Kayar, Sénégal",
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,50 +82,30 @@ class _CommunityScreenState extends State<CommunityScreen> {
               _buildFilters(),
               const SizedBox(height: 16),
               Expanded(
-                child: ListView(
+                // Optimized: Replaced static ListView with ListView.builder for lazy loading memory efficiency
+                child: ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  children: [
-                    _buildActorCard(
-                      imagePath: 'assets/images/user_profile.png',
-                      name: "Mareyeurs du Littoral",
-                      isVerified: true,
-                      category: "Mareyeur Grossiste",
-                      detailIcon: Icons.inventory_2_outlined,
-                      detailText: "Achat en gros & Export",
-                      location: "Mbour, Sénégal",
-                    ),
-                    const SizedBox(height: 16),
-                    _buildActorCard(
-                      imagePath: 'assets/images/user_profile.png',
-                      name: "Femmes du Sel",
-                      isVerified: true,
-                      category: "Transformateurs",
-                      detailIcon: Icons.whatshot_outlined,
-                      detailText: "Fumage traditionnel",
-                      location: "Joal-Fadiouth, Sénégal",
-                    ),
-                    const SizedBox(height: 16),
-                    _buildActorCard(
-                      imagePath: 'assets/images/user_profile.png',
-                      name: "TransFroid Express",
-                      isVerified: true,
-                      category: "Logistique & Transport",
-                      detailIcon: Icons.ac_unit_outlined,
-                      detailText: "Transport frigorifique",
-                      location: "Dakar Port, Sénégal",
-                    ),
-                    const SizedBox(height: 16),
-                    _buildActorCard(
-                      imagePath: 'assets/images/user_profile.png',
-                      name: "Union de Kayar",
-                      isVerified: true,
-                      category: "Coopérative",
-                      detailIcon: Icons.handshake_outlined,
-                      detailText: "Mutualisation de moyens",
-                      location: "Kayar, Sénégal",
-                    ),
-                    const SizedBox(height: 100), // Space for bottom nav
-                  ],
+                  itemCount: _communityActors.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == _communityActors.length) {
+                      return const SizedBox(
+                          height: 100); // Space for bottom nav
+                    }
+
+                    final actor = _communityActors[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16.0),
+                      child: _buildActorCard(
+                        imagePath: actor["imagePath"],
+                        name: actor["name"],
+                        isVerified: actor["isVerified"],
+                        category: actor["category"],
+                        detailIcon: actor["detailIcon"],
+                        detailText: actor["detailText"],
+                        location: actor["location"],
+                      ),
+                    );
+                  },
                 ),
               ),
             ],
